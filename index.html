@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知行“校园联盟”招生项目商业计划书</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-left: 4px solid #0284c7;
+            font-weight: 600;
+        }
+        @media (min-width: 1024px) {
+            .tab-btn.active {
+                border-left: none;
+                border-right: 4px solid #0284c7;
+            }
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn:hover:not(.active) {
+            background-color: #f1f5f9;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        @media (min-width: 1024px) {
+            .card-hover:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased overflow-x-hidden flex flex-col lg:flex-row h-screen">
+
+    <!-- Chosen Palette: Warm Neutrals with Sky Blue Accents -->
+    <!-- Application Structure Plan: Mobile-First Dashboard. Side-nav converts to a toggleable mobile menu. 
+         Grid systems are responsive (1 col on mobile, 2+ on desktop). Charts are height-constrained 
+         specifically for small viewports to prevent layout breaking. -->
+    <!-- Visualization & Content Choices: 
+         - Overview: KPI cards stack vertically on mobile.
+         - Strategy: Step-by-step process remains vertical for clarity.
+         - Financials: Doughnut chart stays centered, line chart scales width.
+         - Operations: Grid layout for team cards ensures easy touch-scrolling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white shadow-sm px-6 py-4 flex justify-between items-center z-30">
+        <div>
+            <h1 class="text-xl font-bold text-sky-700">知行校园联盟</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Business Proposal</p>
+        </div>
+        <button id="mobile-menu-toggle" class="p-2 text-slate-600 hover:text-sky-600 transition-colors">
+            <span class="text-2xl" id="menu-icon">☰</span>
+        </button>
+    </header>
+
+    <!-- Sidebar / Mobile Menu overlay -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-0 w-64 bg-white shadow-xl h-full flex flex-col z-40 transition-transform duration-300 ease-in-out flex-shrink-0">
+        <div class="p-6 border-b border-slate-100 hidden lg:block">
+            <h1 class="text-2xl font-bold text-sky-700 tracking-tight">知行校园联盟</h1>
+            <p class="text-xs text-slate-500 mt-1">数字化招生商业计划书</p>
+        </div>
+        
+        <div class="p-6 lg:hidden flex justify-between items-center border-b border-slate-100">
+            <span class="font-bold text-slate-400">菜单导航</span>
+            <button id="close-menu" class="text-slate-400 text-xl">&times;</button>
+        </div>
+
+        <nav class="flex-1 py-4 flex flex-col gap-2 no-scrollbar overflow-y-auto">
+            <button onclick="switchTab('overview')" id="nav-overview" class="tab-btn active flex items-center w-full px-6 py-4 lg:py-3 text-left text-slate-600">
+                <span class="mr-3 text-lg">📊</span> 核心综述
+            </button>
+            <button onclick="switchTab('strategy')" id="nav-strategy" class="tab-btn flex items-center w-full px-6 py-4 lg:py-3 text-left text-slate-600">
+                <span class="mr-3 text-lg">🚀</span> 获客战略
+            </button>
+            <button onclick="switchTab('financials')" id="nav-financials" class="tab-btn flex items-center w-full px-6 py-4 lg:py-3 text-left text-slate-600">
+                <span class="mr-3 text-lg">💰</span> 财务测算
+            </button>
+            <button onclick="switchTab('operations')" id="nav-operations" class="tab-btn flex items-center w-full px-6 py-4 lg:py-3 text-left text-slate-600">
+                <span class="mr-3 text-lg">👥</span> 运营与团队
+            </button>
+        </nav>
+
+        <div class="p-6 border-t border-slate-100">
+            <div class="bg-sky-50 rounded-lg p-4">
+                <p class="text-xs text-sky-800 font-semibold mb-1">项目愿景</p>
+                <p class="text-[11px] text-sky-600 leading-relaxed">以数字化闭环破解高成本获客难题，打造标准化招生护城河。</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile menu -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-5 md:p-8 lg:p-12 relative">
+        
+        <!-- Tab: Overview -->
+        <section id="tab-overview" class="fade-in block">
+            <header class="mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-slate-800 mb-4">项目核心综述</h2>
+                <p class="text-sm lg:text-lg text-slate-600 leading-relaxed max-w-4xl">
+                    本部分概述了知行“校园联盟”招生项目的整体商业愿景与核心指标。通过互动的形式，展示我们如何锁定高确定性的财务回报。
+                </p>
+            </header>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12">
+                <div class="bg-white rounded-xl p-5 lg:p-6 shadow-sm border border-slate-100 card-hover">
+                    <div class="text-2xl mb-2">💸</div>
+                    <h3 class="text-slate-500 text-xs font-medium">总资金投入</h3>
+                    <p class="text-2xl lg:text-3xl font-bold text-slate-800 mt-1">136.4<span class="text-base font-normal text-slate-500 ml-1">万</span></p>
+                    <p class="text-[10px] text-slate-400 mt-2">用于工具推广与团队基建</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 lg:p-6 shadow-sm border border-slate-100 card-hover">
+                    <div class="text-2xl mb-2">📈</div>
+                    <h3 class="text-slate-500 text-xs font-medium">学费预期收益</h3>
+                    <p class="text-2xl lg:text-3xl font-bold text-green-600 mt-1">150.0<span class="text-base font-normal text-green-500 ml-1">万</span></p>
+                    <p class="text-[10px] text-slate-400 mt-2">首年即可完全覆盖投入</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 lg:p-6 shadow-sm border border-slate-100 card-hover">
+                    <div class="text-2xl mb-2">🎯</div>
+                    <h3 class="text-slate-500 text-xs font-medium">目标入籍人数</h3>
+                    <p class="text-2xl lg:text-3xl font-bold text-sky-600 mt-1">200<span class="text-base font-normal text-sky-500 ml-1">+</span></p>
+                    <p class="text-[10px] text-slate-400 mt-2">基于50%交定转化率</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 lg:p-6 shadow-sm border border-slate-100 card-hover">
+                    <div class="text-2xl mb-2">📉</div>
+                    <h3 class="text-slate-500 text-xs font-medium">入籍成本红线</h3>
+                    <p class="text-2xl lg:text-3xl font-bold text-slate-800 mt-1">≤ 6.5<span class="text-base font-normal text-slate-500 ml-1">k/人</span></p>
+                    <p class="text-[10px] text-slate-400 mt-2">远低于行业平均水平</p>
+                </div>
+            </div>
+
+            <!-- Concepts Grid -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 lg:p-8 mb-8">
+                <h3 class="text-lg lg:text-xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">核心商业概念 (大白话解析)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-sky-100 flex items-center justify-center text-lg shrink-0">🎣</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm lg:text-base mb-1">数字化招生工具</h4>
+                            <p class="text-[12px] lg:text-sm text-slate-600 leading-relaxed">免费【测分小程序】，家长为获取报告主动留电话。边际获客成本极低。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-indigo-100 flex items-center justify-center text-lg shrink-0">♻️</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm lg:text-base mb-1">需求二次匹配</h4>
+                            <p class="text-[12px] lg:text-sm text-slate-600 leading-relaxed">肥水不流外人田。对知行无意向的客户转推至联盟院校，极致利用流量。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Strategy -->
+        <section id="tab-strategy" class="fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-slate-800 mb-4">获客战略与模型</h2>
+                <p class="text-sm lg:text-lg text-slate-600 leading-relaxed">展示“三步走”流程及各渠道成本对比。说明为何重金投入数字化工具。</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 lg:p-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-6 italic">三段式高转化招生闭环</h3>
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-sky-50 rounded-lg p-4 border border-sky-100 relative">
+                            <h4 class="font-bold text-sky-800 text-sm mb-1">1. 前台：获取规模化生源</h4>
+                            <p class="text-xs text-slate-600">以“升学规划工具”+素人IP，吸引家长主动咨询，建立私域生源库。</p>
+                        </div>
+                        <div class="flex justify-center text-slate-300">⬇️</div>
+                        <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100 relative">
+                            <h4 class="font-bold text-indigo-800 text-sm mb-1">2. 中台：线索清洗与二转</h4>
+                            <p class="text-xs text-slate-600">规划师1对1介入。意向直接成交，无意向则转销联盟其他产品。</p>
+                        </div>
+                        <div class="flex justify-center text-slate-300">⬇️</div>
+                        <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-100 relative">
+                            <h4 class="font-bold text-emerald-800 text-sm mb-1">3. 后端：联盟院校成交</h4>
+                            <p class="text-xs text-slate-600">分配给专属网销团队，死磕线下交费与学籍注册最终环节。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 lg:p-8 flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-800 mb-2 text-center lg:text-left">获客抓手成本对比 (元)</h3>
+                    <div class="chart-container flex-1">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Financials -->
+        <section id="tab-financials" class="fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-slate-800 mb-4">财务测算与节点</h2>
+                <p class="text-sm lg:text-lg text-slate-600 leading-relaxed">拆解136.4万资金流向及招生成交节点预估。</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 lg:p-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">启动资金预算占比</h3>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-2">
+                        <div class="flex justify-between text-xs lg:text-sm py-1 border-b border-slate-50">
+                            <span class="text-slate-500">广告投放</span>
+                            <span class="font-bold text-sky-600">70万</span>
+                        </div>
+                        <div class="flex justify-between text-xs lg:text-sm py-1 border-b border-slate-50">
+                            <span class="text-slate-500">人力资源</span>
+                            <span class="font-bold text-indigo-600">36.4万</span>
+                        </div>
+                        <div class="flex justify-between text-xs lg:text-sm py-1">
+                            <span class="text-slate-500">软硬件基建</span>
+                            <span class="font-bold text-teal-600">30万</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 lg:p-8 flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">月度交定指标预测 (人)</h3>
+                    <div class="chart-container flex-1">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-50 rounded-lg text-[10px] lg:text-xs text-slate-500 text-center">
+                        阶梯式增长，锁定6月份为最核心爆发期
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Operations -->
+        <section id="tab-operations" class="fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-slate-800 mb-4">运营与团队</h2>
+                <p class="text-sm lg:text-lg text-slate-600 leading-relaxed">明确双方权责边界。知行提供底层基建，我方负责专业执行。</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-8">
+                <!-- Requirements Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-800 flex items-center text-sm lg:text-base">
+                            <span class="text-lg mr-2">🏢</span> 需甲方提供 (基建)
+                        </h3>
+                    </div>
+                    <ul class="p-5 space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-sky-500 mr-2 mt-0.5 text-xs">●</span>
+                            <span class="text-xs lg:text-sm text-slate-700">专项启动资金 (136.4万)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-sky-500 mr-2 mt-0.5 text-xs">●</span>
+                            <span class="text-xs lg:text-sm text-slate-700">系统账户与客户数据库权限</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-sky-500 mr-2 mt-0.5 text-xs">●</span>
+                            <span class="text-xs lg:text-sm text-slate-700">100w注册资本合规主体及办公场地</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Team Cards -->
+                <div class="bg-white rounded-xl shadow-sm border border-sky-100 overflow-hidden">
+                    <div class="bg-sky-50 p-4 border-b border-sky-100">
+                        <h3 class="font-bold text-sky-800 flex items-center text-sm lg:text-base">
+                            <span class="text-lg mr-2">⚔️</span> 我方执行团队
+                        </h3>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex justify-between items-center text-xs lg:text-sm p-2 bg-slate-50 rounded">
+                            <span class="text-slate-600">项目负责人</span>
+                            <span class="font-bold">董克</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs lg:text-sm p-2 bg-slate-50 rounded">
+                            <span class="text-slate-600">内容中心负责人</span>
+                            <span class="font-bold">张雅雯</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs lg:text-sm p-2 bg-slate-50 rounded">
+                            <span class="text-slate-600">市场投放负责人</span>
+                            <span class="font-bold">杜媛</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // DOM Elements
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const closeMenu = document.getElementById('close-menu');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const menuIcon = document.getElementById('menu-icon');
+
+        // Functions for mobile navigation
+        function toggleMobileMenu() {
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('hidden');
+                menuIcon.textContent = '✕';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+                menuIcon.textContent = '☰';
+            }
+        }
+
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+        closeMenu.addEventListener('click', toggleMobileMenu);
+        sidebarOverlay.addEventListener('click', toggleMobileMenu);
+
+        // Tab Switching Logic
+        let chartsInitialized = false;
+        let costChartInstance = null;
+        let budgetChartInstance = null;
+        let monthlyChartInstance = null;
+
+        function switchTab(tabId) {
+            // Close mobile menu if open
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+                menuIcon.textContent = '☰';
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => {
+                sec.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('nav-' + tabId).classList.add('active');
+
+            if ((tabId === 'strategy' || tabId === 'financials') && !chartsInitialized) {
+                setTimeout(initCharts, 200); 
+                chartsInitialized = true;
+            } else if (chartsInitialized) {
+                // Update charts on resize or tab switch to ensure proper fitting
+                if (costChartInstance) costChartInstance.resize();
+                if (budgetChartInstance) budgetChartInstance.resize();
+                if (monthlyChartInstance) monthlyChartInstance.resize();
+            }
+        }
+
+        function initCharts() {
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.font.size = window.innerWidth < 768 ? 10 : 12;
+
+            const costCtx = document.getElementById('costChart');
+            if(costCtx) {
+                costChartInstance = new Chart(costCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['工具引流', '线索二转', '视频矩阵'],
+                        datasets: [{
+                            data: [3000, 5000, 7000],
+                            backgroundColor: ['#0ea5e9', '#6366f1', '#94a3b8'],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const budgetCtx = document.getElementById('budgetChart');
+            if(budgetCtx) {
+                budgetChartInstance = new Chart(budgetCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['广告投放', '人力资源', '软硬件采购'],
+                        datasets: [{
+                            data: [70, 36.4, 30],
+                            backgroundColor: ['#0ea5e9', '#6366f1', '#14b8a6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: { 
+                                position: 'bottom',
+                                labels: { boxWidth: 10, padding: 15 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const monthlyCtx = document.getElementById('monthlyChart');
+            if(monthlyCtx) {
+                monthlyChartInstance = new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['4月', '5月', '6月', '7月'],
+                        datasets: [{
+                            data: [60, 100, 200, 40],
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+            if (chartsInitialized) {
+                initCharts(); // Re-init to update font sizes
+            }
+        });
+    </script>
+</body>
+</html>
