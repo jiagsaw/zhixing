@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霍兰德职业性格测试 (90题专业版)</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Phosphor Icons (轻量级图标库) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* 自定义动画和过渡效果 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-out-left {
+            animation: slideOutLeft 0.3s ease-in forwards;
+        }
+
+        @keyframes slideOutLeft {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-30px); }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.3s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* 隐藏不同步骤的容器 */
+        .step-container {
+            display: none;
+        }
+        
+        .step-container.active {
+            display: block;
+        }
+
+        /* 选项悬停和选中效果 */
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            transform: translateY(-2px);
+        }
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+        .option-selected {
+            border-color: #6366f1 !important; /* indigo-500 */
+            background-color: #e0e7ff !important; /* indigo-50 */
+            color: #4338ca !important; /* indigo-700 */
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* 进度条平滑过渡 */
+        #progress-bar {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 打印样式优化 */
+        @media print {
+            body { background-color: white; }
+            nav, .no-print { display: none !important; }
+            #step-result { display: block !important; }
+            .print-break-inside-avoid { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- 顶部导航 -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-indigo-600 font-extrabold text-xl cursor-pointer hover:opacity-80 transition-opacity" onclick="returnHome()">
+                <i class="ph ph-brain text-2xl"></i>
+                <span>RIASEC<span class="text-gray-800">Pro</span></span>
+            </div>
+            <div id="nav-progress" class="text-sm font-bold text-gray-400 hidden">
+                进度: 0%
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主体内容区 -->
+    <main class="min-h-[85vh] pb-12 transition-all duration-300 relative overflow-hidden">
+        
+        <!-- 步骤 1: 欢迎页 -->
+        <section id="step-intro" class="step-container active fade-in max-w-3xl mx-auto p-6 pt-12 flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-indigo-100 to-purple-100 rounded-3xl flex items-center justify-center mb-8 shadow-sm transform rotate-3">
+                <i class="ph ph-target text-indigo-600 text-5xl transform -rotate-3"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-800 mb-6 tracking-tight">
+                霍兰德职业性格测试 <span class="text-indigo-600 block md:inline mt-2 md:mt-0">(90题专业版)</span>
+            </h1>
+            <p class="text-gray-600 text-lg mb-10 leading-relaxed px-4">
+                找准你的职业核心定位！本测试基于心理学家约翰·霍兰德(John Holland)的RIASEC理论，采用<strong>标准90题</strong>专业量表。通过深度的兴趣交叉测试，准确解析你的职业基因（Holland Code）。
+            </p>
+            
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 text-left w-full mb-10 shadow-lg shadow-indigo-100/40">
+                <h3 class="font-bold text-gray-800 mb-5 flex items-center text-lg">
+                    <i class="ph-fill ph-check-circle text-indigo-500 text-2xl mr-2"></i> 专业版测试须知
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h4 class="font-semibold text-slate-700 mb-1 flex items-center"><i class="ph ph-timer mr-1"></i> 预计用时</h4>
+                        <p class="text-sm text-slate-500">共 90 道题，预计需要 5 - 10 分钟。请预留专注的时间完成。</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h4 class="font-semibold text-slate-700 mb-1 flex items-center"><i class="ph ph-lightbulb mr-1"></i> 第一直觉</h4>
+                        <p class="text-sm text-slate-500">不要过多考虑能力是否达到或薪水高低，仅凭你是否“喜欢”来选择。</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h4 class="font-semibold text-slate-700 mb-1 flex items-center"><i class="ph ph-target mr-1"></i> 真实作答</h4>
+                        <p class="text-sm text-slate-500">选项没有对错之分。越真实的回答，结果分析越精准。</p>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <h4 class="font-semibold text-slate-700 mb-1 flex items-center"><i class="ph ph-chart-bar mr-1"></i> 全面报告</h4>
+                        <p class="text-sm text-slate-500">完成后将获得多维度雷达图、性格解析及深度职业推荐清单。</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startTest()" class="group relative flex items-center justify-center px-10 py-4 bg-indigo-600 text-white rounded-full font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full md:w-auto overflow-hidden">
+                <span class="relative z-10 flex items-center">
+                    开始深度测评 <i class="ph-bold ph-arrow-right ml-2 text-xl group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </button>
+        </section>
+
+        <!-- 步骤 2: 测试页 -->
+        <section id="step-test" class="step-container max-w-3xl mx-auto p-4 md:p-6 flex flex-col pt-8">
+            <!-- 进度条区域 -->
+            <div class="mb-8 sticky top-16 bg-[#f8fafc] pt-2 pb-4 z-10">
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1 block">Progress</span>
+                        <span class="text-2xl font-extrabold text-gray-800">
+                            <span id="current-q-num">1</span> <span class="text-lg text-gray-400 font-medium">/ 90</span>
+                        </span>
+                    </div>
+                    <span id="progress-percent" class="text-sm font-semibold text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
+                        0%
+                    </span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full w-0"></div>
+                </div>
+            </div>
+
+            <!-- 题目卡片区 -->
+            <div id="question-card" class="fade-in">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 md:p-12 mb-8 min-h-[220px] flex flex-col justify-center relative overflow-hidden">
+                    <!-- 装饰背景 -->
+                    <i class="ph ph-brain absolute -right-8 -bottom-8 text-9xl text-slate-50 opacity-50"></i>
+                    
+                    <h2 id="question-text" class="text-2xl md:text-4xl font-bold text-gray-800 text-center leading-snug md:leading-normal relative z-10">
+                        加载题目中...
+                    </h2>
+                </div>
+
+                <!-- 选项区 -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4" id="options-container">
+                    <!-- 选项由 JS 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 底部导航 -->
+            <div class="mt-10 flex flex-col sm:flex-row justify-between items-center text-gray-500 gap-4">
+                <button onclick="goBack()" id="btn-prev" class="flex items-center px-5 py-2.5 rounded-xl font-medium transition-all bg-white border border-gray-200 hover:bg-gray-50 hover:text-gray-800 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100">
+                    <i class="ph-bold ph-arrow-left mr-2"></i> 回到上一题
+                </button>
+                
+                <div class="text-sm flex items-center bg-white border border-slate-100 px-4 py-2 rounded-lg text-slate-500 shadow-sm">
+                    <i class="ph-fill ph-lightbulb text-amber-500 mr-2 text-lg"></i>
+                    抛开顾虑，相信你的第一直觉
+                </div>
+            </div>
+        </section>
+
+        <!-- 步骤 3: 结果页 -->
+        <section id="step-result" class="step-container max-w-5xl mx-auto p-4 md:p-6 space-y-8 pb-16">
+            
+            <!-- 英雄横幅区域 -->
+            <div class="bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 rounded-3xl p-8 md:p-14 text-white text-center shadow-2xl relative overflow-hidden print-break-inside-avoid">
+                <!-- 装饰光晕 -->
+                <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none no-print">
+                    <div class="absolute -top-24 -right-24 w-96 h-96 bg-purple-500 rounded-full blur-3xl mix-blend-screen"></div>
+                    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500 rounded-full blur-3xl mix-blend-screen"></div>
+                </div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-medium mb-6">
+                        <i class="ph-fill ph-trophy text-yellow-400 mr-2 text-lg"></i> 测试完成
+                    </div>
+                    <p class="text-indigo-200 text-lg md:text-xl mb-2 font-medium">你的专属霍兰德职业代码是</p>
+                    <h1 id="res-code" class="text-7xl md:text-9xl font-black tracking-widest mb-6 drop-shadow-lg font-mono">
+                        ---
+                    </h1>
+                    <p id="res-summary" class="text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                        分析中...
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 print-break-inside-avoid">
+                <!-- 左侧：得分分布图表 -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                        <i class="ph-fill ph-target text-indigo-500 mr-2 text-2xl"></i> 维度得分分布
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-8">各维度总分为 75 分，分数越高代表你的倾向越明显。</p>
+                    
+                    <div id="res-bars" class="space-y-6 flex-grow flex flex-col justify-center">
+                        <!-- 图表由 JS 动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 右侧：主导性格解析 -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
+                        <div class="flex items-center mb-6 border-b border-gray-50 pb-6">
+                            <div id="res-primary-icon-box" class="p-4 rounded-2xl bg-indigo-100 mr-5 text-indigo-500">
+                                <i id="res-primary-icon" class="ph-fill ph-star text-4xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm text-gray-500 font-bold tracking-wider uppercase mb-1">核心主导天赋 (First Letter)</h2>
+                                <h3 id="res-primary-name" class="text-2xl md:text-3xl font-black text-gray-800">类型名称</h3>
+                            </div>
+                        </div>
+                        
+                        <p id="res-primary-desc" class="text-gray-600 text-lg leading-loose mb-8">
+                            类型描述...
+                        </p>
+                        
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">你的性格标签</h4>
+                            <div id="res-tags" class="flex flex-wrap gap-2.5">
+                                <!-- 标签由 JS 生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 补充说明 -->
+                    <div class="bg-indigo-50/50 rounded-3xl p-6 md:p-8 border border-indigo-100">
+                        <h4 class="font-bold text-indigo-900 mb-3 flex items-center">
+                            <i class="ph-bold ph-brain text-xl mr-2"></i> 什么是霍兰德代码？
+                        </h4>
+                        <p id="res-holland-desc" class="text-indigo-800/80 text-sm leading-relaxed">
+                            霍兰德理论认为，绝大多数人都可以归为六种性格类型，而工作环境也同样分为这六种。人们通常会寻找能让他们发挥自身优势、表达态度和价值观的工作环境。你的代码是由你得分最高的前三种类型组成，这三个字母的组合能够最精确地描绘你的职业偏好轮廓。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 职业推荐区块 -->
+            <div class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-gray-100 mt-8 print-break-inside-avoid">
+                <div class="text-center mb-10">
+                    <h3 class="text-3xl font-black text-gray-800 mb-4">
+                        💼 为你量身定制的职业方向
+                    </h3>
+                    <p id="res-career-desc" class="text-gray-500 max-w-2xl mx-auto text-lg">
+                        基于你的代码结构，以下这些领域能让你最大程度地发挥天赋，并获得极高的职业满足感。
+                    </p>
+                </div>
+                
+                <div id="res-careers" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- 职业推荐由 JS 生成 -->
+                </div>
+            </div>
+
+            <!-- 底部操作区 -->
+            <div class="no-print flex flex-col sm:flex-row justify-center items-center pt-8 gap-4 border-t border-gray-200 mt-12">
+                <button onclick="window.print()" class="flex items-center px-8 py-3.5 bg-slate-800 text-white rounded-full font-bold hover:bg-slate-900 transition-colors w-full sm:w-auto justify-center shadow-lg">
+                    <i class="ph-bold ph-printer mr-2 text-xl"></i> 保存 / 打印报告
+                </button>
+                <button onclick="restartTest()" class="flex items-center px-8 py-3.5 bg-white border-2 border-slate-200 text-slate-700 rounded-full font-bold hover:bg-slate-50 transition-colors w-full sm:w-auto justify-center">
+                    <i class="ph-bold ph-arrow-counter-clockwise mr-2 text-xl"></i> 重新开始测试
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 核心数据配置 ---
+
+        // RIASEC 维度信息
+        const typeInfo = {
+            R: {
+                name: '实用型 (Realistic)',
+                iconClass: 'ph-wrench',
+                iconColor: 'text-blue-500',
+                bgColor: 'bg-blue-500',
+                lightBgColor: 'bg-blue-100',
+                description: '你喜欢具体的、有形的任务。倾向于从事涉及操作工具、机械、动植物等活动。喜欢户外工作或动手操作，看重具体结果，做事脚踏实地。',
+                traits: ['务实', '动手能力强', '喜欢自然/机械', '直接', '稳重'],
+                careers: ['机械工程师', '建筑师', '软件测试员', '厨师', '兽医', '电工', '飞行员', '农业专家']
+            },
+            I: {
+                name: '研究型 (Investigative)',
+                iconClass: 'ph-lightbulb',
+                iconColor: 'text-purple-500',
+                bgColor: 'bg-purple-500',
+                lightBgColor: 'bg-purple-100',
+                description: '你喜欢探索和理解事物。倾向于通过观察、研究和分析来解决复杂问题。喜欢探索未知，看重科学、逻辑和抽象思维。',
+                traits: ['分析力强', '好奇心重', '独立', '理性', '严谨'],
+                careers: ['科学家', '程序员', '医生', '数据分析师', '大学教授', '心理学家', '金融分析师', '研究员']
+            },
+            A: {
+                name: '艺术型 (Artistic)',
+                iconClass: 'ph-palette',
+                iconColor: 'text-pink-500',
+                bgColor: 'bg-pink-500',
+                lightBgColor: 'bg-pink-100',
+                description: '你喜欢自我表达和创造。倾向于在非结构化的环境中通过创造性的方式表达自己。喜欢艺术、设计、音乐、写作，追求自由和个性化。',
+                traits: ['富有创意', '想象力丰富', '感性', '追求自由', '直觉强'],
+                careers: ['设计师', '作家', '音乐家', '演员', '摄影师', '导演', '广告创意', '编辑']
+            },
+            S: {
+                name: '社会型 (Social)',
+                iconClass: 'ph-users',
+                iconColor: 'text-green-500',
+                bgColor: 'bg-green-500',
+                lightBgColor: 'bg-green-100',
+                description: '你喜欢帮助和陪伴他人。倾向于从事与人打交道的工作，喜欢教导、帮助、启发或培训他人。看重人际关系、社会福利和团队合作。',
+                traits: ['热情', '善解人意', '乐于助人', '沟通力强', '有同理心'],
+                careers: ['教师', '护士', '心理咨询师', '社会工作者', '人力资源专员', '导游', '客服经理']
+            },
+            E: {
+                name: '企业型 (Enterprising)',
+                iconClass: 'ph-briefcase',
+                iconColor: 'text-orange-500',
+                bgColor: 'bg-orange-500',
+                lightBgColor: 'bg-orange-100',
+                description: '你喜欢领导和影响他人。倾向于影响、说服他人或领导团队以实现组织目标或经济利益。喜欢竞争、承担风险，具有雄心壮志。',
+                traits: ['自信', '领导力', '说服力强', '目标导向', '敢于冒险'],
+                careers: ['企业家', '销售经理', '律师', '政治家', '市场营销总监', '项目经理', '公关专家']
+            },
+            C: {
+                name: '事务型 (Conventional)',
+                iconClass: 'ph-file-text',
+                iconColor: 'text-teal-500',
+                bgColor: 'bg-teal-500',
+                lightBgColor: 'bg-teal-100',
+                description: '你喜欢秩序和精确。倾向于从事有条理、注重细节、按既定规则进行的数据和文书工作。看重准确性、组织纪律和可预测性。',
+                traits: ['严谨', '有条理', '注重细节', '可靠', '效率高'],
+                careers: ['会计', '行政主管', '审计师', '精算师', '图书管理员', '数据录入员', '银行职员']
+            }
+        };
+
+        // 90道交叉测试题
+        const questions = [
+            { id: 1, type: 'R', text: '组装、修理电器或机械设备' },
+            { id: 2, type: 'I', text: '在实验室进行科学实验或研究' },
+            { id: 3, type: 'A', text: '创作绘画、摄影或雕塑等艺术作品' },
+            { id: 4, type: 'S', text: '辅导学生或教导他人学习新知识' },
+            { id: 5, type: 'E', text: '创办并经营自己的公司或业务' },
+            { id: 6, type: 'C', text: '整理归档文件，维护精确的数据记录' },
+            { id: 7, type: 'R', text: '驾驶重型卡车、拖拉机或操作大型机械' },
+            { id: 8, type: 'I', text: '研究和解决复杂的数学或物理难题' },
+            { id: 9, type: 'A', text: '编写剧本、小说、诗歌或创作音乐' },
+            { id: 10, type: 'S', text: '为遇到心理困扰或生活挫折的人提供咨询' },
+            { id: 11, type: 'E', text: '带领团队完成具有挑战性的商业项目' },
+            { id: 12, type: 'C', text: '审核财务报表，处理会计或税务事务' },
+            { id: 13, type: 'R', text: '在户外从事农业、林业或野生动物保护工作' },
+            { id: 14, type: 'I', text: '阅读专业科学杂志或深入研究学术文章' },
+            { id: 15, type: 'A', text: '参与戏剧表演、舞蹈或演奏乐器' },
+            { id: 16, type: 'S', text: '参与社区志愿服务，帮助弱势群体' },
+            { id: 17, type: 'E', text: '向客户推销产品、服务或进行商业谈判' },
+            { id: 18, type: 'C', text: '按照详细的规范、标准和流程进行质量检查' },
+            { id: 19, type: 'R', text: '制作木制品、修理家具或进行手工制造' },
+            { id: 20, type: 'I', text: '收集并分析大量数据以寻找潜在的规律' },
+            { id: 21, type: 'A', text: '设计服装、室内装饰或进行平面设计' },
+            { id: 22, type: 'S', text: '在医疗机构照顾病人或在养老机构服务老人' },
+            { id: 23, type: 'E', text: '在企业或组织中担任高管或领导职务' },
+            { id: 24, type: 'C', text: '安排复杂的会议日程，管理办公室日常事务' },
+            { id: 25, type: 'R', text: '维修汽车、摩托车或各种引擎' },
+            { id: 26, type: 'I', text: '研究人体结构、生物学或医学知识' },
+            { id: 27, type: 'A', text: '从事影视剪辑、动画制作或多媒体艺术' },
+            { id: 28, type: 'S', text: '组织团队建设活动，促进人际交流' },
+            { id: 29, type: 'E', text: '在公共场合发表演讲，说服听众接受你的观点' },
+            { id: 30, type: 'C', text: '使用电子表格软件处理数据和计算公式' },
+            { id: 31, type: 'R', text: '安装和维护房屋的水管、电路等基础设施' },
+            { id: 32, type: 'I', text: '研究天文学，观察和记录星体运动' },
+            { id: 33, type: 'A', text: '在没有严格规则的环境下自由创作' },
+            { id: 34, type: 'S', text: '倾听他人的烦恼，并提供情感上的支持' },
+            { id: 35, type: 'E', text: '制定市场营销策略，扩大产品的市场占有率' },
+            { id: 36, type: 'C', text: '对公司的库存或资产进行仔细的盘点' },
+            { id: 37, type: 'R', text: '参与房屋建筑、砖瓦砌筑或铺设路面' },
+            { id: 38, type: 'I', text: '开发新的软件算法或研究人工智能' },
+            { id: 39, type: 'A', text: '去美术馆、音乐厅欣赏各种艺术展览和演出' },
+            { id: 40, type: 'S', text: '在学校或教育机构负责招生、辅导工作' },
+            { id: 41, type: 'E', text: '参与政治竞选或在学生会/社团竞选主席' },
+            { id: 42, type: 'C', text: '核对复杂的银行账单或审核报销凭证' },
+            { id: 43, type: 'R', text: '操作机床进行精密零件的加工和制造' },
+            { id: 44, type: 'I', text: '探索历史遗迹，进行考古学或人类学研究' },
+            { id: 45, type: 'A', text: '阅读经典文学作品或创作散文' },
+            { id: 46, type: 'S', text: '调解朋友或同事之间的矛盾与冲突' },
+            { id: 47, type: 'E', text: '通过谈判为公司争取最有利的合同条款' },
+            { id: 48, type: 'C', text: '负责图书、档案资料的分类、编号和保存' },
+            { id: 49, type: 'R', text: '饲养家禽家畜或从事动物繁育工作' },
+            { id: 50, type: 'I', text: '研究地质结构，探索地球的形成和矿产' },
+            { id: 51, type: 'A', text: '设计有创意的广告海报或品牌Logo' },
+            { id: 52, type: 'S', text: '为残疾人或弱势群体争取合法权益' },
+            { id: 53, type: 'E', text: '发起并主导一个全新的商业投资项目' },
+            { id: 54, type: 'C', text: '编写软件的用户操作手册或技术文档' },
+            { id: 55, type: 'R', text: '维修各种家用电器（如电视、冰箱等）' },
+            { id: 56, type: 'I', text: '分析经济发展趋势或金融市场走向' },
+            { id: 57, type: 'A', text: '参加合唱团、乐队或进行独自声乐训练' },
+            { id: 58, type: 'S', text: '在灾区或贫困地区参与救援和援助工作' },
+            { id: 59, type: 'E', text: '监督下属员工的工作进度并进行绩效考核' },
+            { id: 60, type: 'C', text: '严格遵守保密协议，处理机密文件' },
+            { id: 61, type: 'R', text: '学习如何驾驶飞机或直升机' },
+            { id: 62, type: 'I', text: '对植物的基因或生长习性进行观察研究' },
+            { id: 63, type: 'A', text: '研究不同国家和时期的艺术史和文化流派' },
+            { id: 64, type: 'S', text: '组织公益讲座，普及健康或安全知识' },
+            { id: 65, type: 'E', text: '拓展新的客户资源，建立广泛的商业人脉' },
+            { id: 66, type: 'C', text: '为大型会议预订场地、安排住宿并核对名单' },
+            { id: 67, type: 'R', text: '在野外露营、徒步旅行或进行生存训练' },
+            { id: 68, type: 'I', text: '使用显微镜观察细胞或微生物' },
+            { id: 69, type: 'A', text: '创作漫画、插画或设计游戏角色' },
+            { id: 70, type: 'S', text: '担任企业的新员工入职培训讲师' },
+            { id: 71, type: 'E', text: '代表公司处理公共关系危机或媒体采访' },
+            { id: 72, type: 'C', text: '检查和校对文章、书籍中的错别字和语法错误' },
+            { id: 73, type: 'R', text: '铺设通信电缆或安装网络硬件设备' },
+            { id: 74, type: 'I', text: '通过化学实验合成新的物质或材料' },
+            { id: 75, type: 'A', text: '担任广播节目主持人或进行配音工作' },
+            { id: 76, type: 'S', text: '在孤儿院照顾孩子，陪伴他们成长' },
+            { id: 77, type: 'E', text: '制定企业的长期发展战略和愿景目标' },
+            { id: 78, type: 'C', text: '维护和更新企业的数据库和客户信息系统' },
+            { id: 79, type: 'R', text: '从事消防、安保或军事等体力消耗大的工作' },
+            { id: 80, type: 'I', text: '诊断患者的复杂病情并找出病因' },
+            { id: 81, type: 'A', text: '设计独特的珠宝首饰或手工艺品' },
+            { id: 82, type: 'S', text: '策划并主持各种社交聚会或联谊活动' },
+            { id: 83, type: 'E', text: '买卖股票、房地产或进行风险投资' },
+            { id: 84, type: 'C', text: '记录详细的会议纪要并分发给所有参会者' },
+            { id: 85, type: 'R', text: '学习如何使用电焊、切割等工业技术' },
+            { id: 86, type: 'I', text: '进行犯罪现场调查或法医鉴定分析' },
+            { id: 87, type: 'A', text: '布置节庆活动的会场，营造艺术氛围' },
+            { id: 88, type: 'S', text: '在宗教场所或社会团体中担任精神导师' },
+            { id: 89, type: 'E', text: '创办一个慈善基金会并负责筹款' },
+            { id: 90, type: 'C', text: '计算员工工资、社保和缴纳各项税务' }
+        ];
+
+        // 选项及样式
+        const optionsDef = [
+            { value: 1, label: '非常反感', emoji: '😖', colorClass: 'hover:bg-red-50 hover:border-red-300' },
+            { value: 2, label: '不太喜欢', emoji: '撇', colorClass: 'hover:bg-orange-50 hover:border-orange-300' },
+            { value: 3, label: '一般中立', emoji: '😐', colorClass: 'hover:bg-gray-50 hover:border-gray-300' },
+            { value: 4, label: '比较喜欢', emoji: '🙂', colorClass: 'hover:bg-blue-50 hover:border-blue-300' },
+            { value: 5, label: '非常喜欢', emoji: '🤩', colorClass: 'hover:bg-green-50 hover:border-green-300' }
+        ];
+
+        // --- 应用状态 ---
+        let currentStep = 'intro'; 
+        let currentQIndex = 0;
+        let answers = new Array(questions.length).fill(null);
+        let isAnimating = false;
+
+        // --- DOM 元素引用 ---
+        const sections = {
+            intro: document.getElementById('step-intro'),
+            test: document.getElementById('step-test'),
+            result: document.getElementById('step-result')
+        };
+        const navProgress = document.getElementById('nav-progress');
+        
+        // --- 核心逻辑函数 ---
+
+        // 切换视图
+        function switchStep(step) {
+            Object.values(sections).forEach(sec => sec.classList.remove('active'));
+            sections[step].classList.add('active');
+            currentStep = step;
+            
+            if(step === 'test') {
+                navProgress.classList.remove('hidden');
+            } else {
+                navProgress.classList.add('hidden');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        // 返回首页
+        function returnHome() {
+            if(currentStep === 'test') {
+                if(confirm('确定要返回首页吗？当前的测试进度将会丢失。')) {
+                    switchStep('intro');
+                }
+            } else if (currentStep === 'result') {
+                switchStep('intro');
+            }
+        }
+
+        // 开始/重新开始测试
+        function startTest() {
+            currentQIndex = 0;
+            answers = new Array(questions.length).fill(null);
+            renderQuestion();
+            switchStep('test');
+        }
+
+        function restartTest() {
+            startTest();
+        }
+
+        // 渲染当前问题
+        function renderQuestion() {
+            const q = questions[currentQIndex];
+            const progress = (currentQIndex / questions.length) * 100;
+
+            // 更新进度 UI
+            document.getElementById('current-q-num').innerText = currentQIndex + 1;
+            document.getElementById('progress-percent').innerText = `${Math.round(progress)}%`;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            navProgress.innerText = `进度: ${Math.round(progress)}%`;
+
+            // 更新按钮状态
+            document.getElementById('btn-prev').disabled = currentQIndex === 0;
+
+            // 设置题目文本
+            document.getElementById('question-text').innerText = `"${q.text}"`;
+
+            // 渲染选项
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            optionsDef.forEach(opt => {
+                const isSelected = answers[currentQIndex] === opt.value;
+                const btn = document.createElement('button');
+                
+                // 基础样式和动态类名
+                btn.className = `option-btn flex md:flex-col items-center justify-start md:justify-center p-4 border-2 rounded-2xl font-medium cursor-pointer group w-full text-left md:text-center
+                    ${isSelected ? 'option-selected' : `border-gray-100 text-gray-600 bg-white ${opt.colorClass}`}`;
+                
+                btn.onclick = () => handleAnswer(opt.value);
+                
+                btn.innerHTML = `
+                    <div class="text-3xl mr-4 md:mr-0 md:mb-2 transition-transform group-hover:scale-110">
+                        ${opt.emoji}
+                    </div>
+                    <span class="text-[15px]">${opt.label}</span>
+                `;
+                
+                optionsContainer.appendChild(btn);
+            });
+            
+            // 入场动画
+            const card = document.getElementById('question-card');
+            card.className = 'slide-in-right';
+        }
+
+        // 处理回答
+        function handleAnswer(value) {
+            if(isAnimating) return;
+            isAnimating = true;
+
+            // 记录答案
+            answers[currentQIndex] = value;
+            
+            // 立即更新选中状态以便用户看到反馈
+            renderQuestion();
+
+            // 延迟后翻页
+            setTimeout(() => {
+                const card = document.getElementById('question-card');
+                card.className = 'slide-out-left';
+                
+                setTimeout(() => {
+                    if (currentQIndex < questions.length - 1) {
+                        currentQIndex++;
+                        renderQuestion();
+                    } else {
+                        calculateResults();
+                    }
+                    isAnimating = false;
+                }, 300); // 等待离场动画结束
+            }, 200); // 略微停留让用户看到选中
+        }
+
+        // 返回上一题
+        function goBack() {
+            if (currentQIndex > 0 && !isAnimating) {
+                isAnimating = true;
+                const card = document.getElementById('question-card');
+                card.className = 'fade-in'; // 简单的反向动画
+                
+                setTimeout(() => {
+                    currentQIndex--;
+                    renderQuestion();
+                    card.className = 'slide-in-right';
+                    isAnimating = false;
+                }, 100);
+            }
+        }
+
+        // 计算并展示结果
+        function calculateResults() {
+            const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            
+            answers.forEach((ans, index) => {
+                // 容错处理：未答题默认给中立分 3
+                const value = ans || 3; 
+                const type = questions[index].type;
+                scores[type] += value;
+            });
+
+            // 每个维度 15 题，满分 75，最低 15
+            const MAX_SCORE = 75;
+            const MIN_SCORE = 15;
+
+            // 转换为数组、计算百分比并排序
+            const results = Object.keys(scores).map(key => ({
+                type: key,
+                score: scores[key],
+                percentage: Math.max(5, Math.round(((scores[key] - MIN_SCORE) / (MAX_SCORE - MIN_SCORE)) * 100)) 
+            })).sort((a, b) => b.score - a.score);
+
+            renderResultPage(results);
+            switchStep('result');
+        }
+
+        // 渲染结果页面数据
+        function renderResultPage(results) {
+            const top3 = results.slice(0, 3);
+            const hollandCode = top3.map(r => r.type).join('');
+            const primaryType = typeInfo[top3[0].type];
+            const secondaryType = typeInfo[top3[1].type];
+            const tertiaryType = typeInfo[top3[2].type];
+
+            // 1. 英雄横幅数据
+            document.getElementById('res-code').innerText = hollandCode;
+            document.getElementById('res-summary').innerHTML = `
+                你是一个以 <b>${primaryType.name.split(' ')[0]}</b> 为主导的人，
+                同时兼具 <b>${secondaryType.name.split(' ')[0]}</b> 和 <b>${tertiaryType.name.split(' ')[0]}</b> 的特质。
+            `;
+
+            // 2. 得分分布条形图
+            const barsContainer = document.getElementById('res-bars');
+            barsContainer.innerHTML = '';
+            results.forEach(res => {
+                const info = typeInfo[res.type];
+                barsContainer.innerHTML += `
+                    <div class="relative group">
+                        <div class="flex justify-between items-end mb-1.5">
+                            <span class="text-sm font-bold text-gray-700 flex items-center">
+                                <span class="w-6 inline-block text-gray-400 font-mono">${res.type}</span> 
+                                ${info.name.split(' ')[0]}
+                            </span>
+                            <span class="text-sm font-black text-gray-800">${res.score}<span class="text-gray-400 text-xs font-normal"> / 75</span></span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-3.5 overflow-hidden">
+                            <div class="h-full rounded-full ${info.bgColor} transition-all duration-1000 ease-out group-hover:brightness-110" style="width: 0%" data-target-width="${res.percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // 延迟触发进度条动画
+            setTimeout(() => {
+                const bars = barsContainer.querySelectorAll('[data-target-width]');
+                bars.forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-target-width');
+                });
+            }, 100);
+
+            // 3. 主导性格数据
+            document.getElementById('res-primary-icon-box').className = `p-4 rounded-2xl ${primaryType.lightBgColor} ${primaryType.iconColor} mr-5`;
+            document.getElementById('res-primary-icon').className = `ph-fill ${primaryType.iconClass} text-4xl`;
+            document.getElementById('res-primary-name').innerText = primaryType.name;
+            document.getElementById('res-primary-desc').innerText = primaryType.description;
+            
+            // 标签
+            const tagsContainer = document.getElementById('res-tags');
+            let tagsHtml = '';
+            primaryType.traits.forEach(trait => {
+                tagsHtml += `<span class="px-4 py-2 rounded-xl text-sm font-bold ${primaryType.lightBgColor} text-gray-800 border border-white/50 shadow-sm"># ${trait}</span>`;
+            });
+            // 加入一个次要特征的标签
+            tagsHtml += `<span class="px-4 py-2 rounded-xl text-sm font-bold bg-gray-100 text-gray-600 border border-white/50 shadow-sm"># ${secondaryType.traits[0]}</span>`;
+            tagsContainer.innerHTML = tagsHtml;
+
+            // 说明文字插入代码
+            document.getElementById('res-holland-desc').innerHTML = `
+                霍兰德理论认为，绝大多数人都可以归为六种性格类型，而工作环境也同样分为这六种。人们通常会寻找能让他们发挥自身优势、表达态度和价值观的工作环境。你的代码 <b>${hollandCode}</b> 是由你得分最高的前三种类型组成，这三个字母的组合能够最精确地描绘你的职业偏好轮廓。
+            `;
+            document.getElementById('res-career-desc').innerHTML = `
+                基于你的 <b>${hollandCode}</b> 代码结构，以下这些领域能让你最大程度地发挥天赋，并获得极高的职业满足感。
+            `;
+
+            // 4. 职业推荐列表
+            const careersContainer = document.getElementById('res-careers');
+            careersContainer.innerHTML = '';
+            top3.forEach((res, index) => {
+                const info = typeInfo[res.type];
+                let listHtml = '';
+                info.careers.forEach(career => {
+                    listHtml += `<li class="flex items-center text-gray-600 font-medium"><div class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-3"></div> ${career}</li>`;
+                });
+
+                const cardClass = index === 0 
+                    ? 'bg-gradient-to-b from-indigo-50 to-white border-2 border-indigo-100 shadow-md' 
+                    : 'bg-gray-50 border border-gray-100';
+                
+                const badge = index === 0 ? '<span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">首选</span>' : '';
+
+                careersContainer.innerHTML += `
+                    <div class="rounded-2xl p-6 md:p-8 transition-transform hover:-translate-y-1 ${cardClass}">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="p-2.5 rounded-xl ${info.lightBgColor} ${info.iconColor} mr-3">
+                                    <i class="ph-fill ${info.iconClass} text-2xl"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-xl">${info.name.split(' ')[0]}领域</h4>
+                            </div>
+                            ${badge}
+                        </div>
+                        <ul class="space-y-4">
+                            ${listHtml}
+                        </ul>
+                    </div>
+                `;
+            });
+        }
+
+    </script>
+</body>
+</html>
+
