@@ -7,13 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Chosen Palette: Professional Slate & Emerald (Slate-50 background, Slate-900 text, Emerald-600 accents) -->
+    <!-- Chosen Palette: Slate-50 background, Emerald-600 accents, Slate-900 typography -->
     <!-- Application Structure Plan: 
-         1. Input Layer: Edit all placeholders (Company, Names, Dates).
-         2. Investor Insights Layer: Specialized card for Angel-to-A round (20x) growth projections.
-         3. Dynamic Deal Simulator: Multipliers, ROI, and Cash-out logic.
-         4. Liquidation Waterfall: Visualizing exit scenarios.
-         5. Legal Document: Formal Term Sheet for PDF export.
+         1. Config Layer: High-end card inputs for legal placeholders.
+         2. Simulation Layer: Interactive ROI & Liquidation dashboards.
+         3. Document Layer: Formal Term Sheet with active-sync highlighting.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
@@ -24,206 +22,254 @@
             background-color: #f8fafc; 
             color: #0f172a; 
             font-family: 'Inter', -apple-system, sans-serif;
+            scroll-behavior: smooth;
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .input-card:focus-within {
+            border-color: #059669;
+            background-color: #f0fdf4;
+            transform: translateY(-2px);
         }
 
         .chart-container {
             position: relative;
             width: 100%;
-            height: 240px;
+            height: 260px;
             margin: auto;
         }
 
-        /* Slider Styling */
+        /* Modern Slider */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
-            background: #059669; cursor: pointer; margin-top: -6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 2px solid white;
+            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
+            background: #059669; cursor: pointer; margin-top: -7px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid white;
         }
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%; height: 6px; cursor: pointer; background: #e2e8f0; border-radius: 3px;
         }
 
+        /* Highlight flash for doc sync */
+        .sync-flash {
+            animation: flash 0.8s ease-out;
+        }
+        @keyframes flash {
+            0% { background-color: rgba(16, 185, 129, 0.3); }
+            100% { background-color: transparent; }
+        }
+
         .legal-document {
             font-family: "Times New Roman", "SimSun", serif;
-            line-height: 1.8;
+            line-height: 2;
             color: #1a1a1a;
         }
 
-        /* Print Logic */
         @media print {
             .no-print { display: none !important; }
             body { background: white; padding: 0; }
             .legal-document {
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 100% !important;
+                border: none !important; box-shadow: none !important;
+                padding: 0 !important; width: 100% !important;
             }
-            @page { margin: 2.5cm; }
+            @page { margin: 2cm; }
         }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Navbar -->
-    <nav class="sticky top-0 z-50 glass-panel border-b border-slate-200 no-print">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav class="sticky top-0 z-50 glass-panel border-b border-slate-200 no-print px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-slate-900 rounded flex items-center justify-center text-white font-black">VC</div>
-                <h1 class="text-lg font-bold tracking-tight">智投 Term Sheet 解析终端</h1>
+                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black shadow-lg">VC</div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">智投 Term Sheet 解析系统</h1>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Professional Investor Edition</p>
+                </div>
             </div>
-            <div class="flex items-center space-x-4">
-                <span class="text-xs text-slate-400 font-medium">投资人视图</span>
-                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full font-bold text-sm transition-all shadow-lg shadow-emerald-100 flex items-center">
-                    <span class="mr-2">📄</span> 导出意向书 PDF
-                </button>
-            </div>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all shadow-xl shadow-emerald-100 flex items-center">
+                <span class="mr-2">📄</span> 导出 PDF 意向书
+            </button>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-10 space-y-10 no-print">
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-12 no-print">
         
-        <!-- SECTION 1: Placeholder Editor -->
-        <section class="glass-panel rounded-3xl p-8 border-l-8 border-slate-900">
-            <h2 class="text-xl font-black mb-6 flex items-center">
-                <span class="mr-2">🖋️</span> 意向书基础项
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">目标公司名称</label>
-                    <input type="text" id="cfg_company" value="极客科技有限责任公司" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold">
+        <!-- SECTION 1: Advanced Placeholder Editor -->
+        <section class="space-y-6">
+            <div class="flex items-center space-x-2">
+                <span class="text-slate-400">/</span>
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest">基础项编辑</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">目标公司名称</label>
+                    <input type="text" id="cfg_company" value="极客科技有限责任公司" class="w-full bg-transparent text-slate-900 font-bold outline-none text-lg">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">创始人姓名</label>
-                    <input type="text" id="cfg_founder" value="周杰克" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">创始人姓名</label>
+                    <input type="text" id="cfg_founder" value="周杰克" class="w-full bg-transparent text-slate-900 font-bold outline-none text-lg">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">投资方(机构/个人)</label>
-                    <input type="text" id="cfg_investor" value="红衫天使基金" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">投资方(机构/个人)</label>
+                    <input type="text" id="cfg_investor" value="红衫天使基金" class="w-full bg-transparent text-slate-900 font-bold outline-none text-lg">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">签署日期</label>
-                    <input type="date" id="cfg_date" value="2026-03-29" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">签署日期</label>
+                    <input type="date" id="cfg_date" value="2026-03-29" class="w-full bg-transparent text-slate-900 font-bold outline-none">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">签署城市</label>
-                    <input type="text" id="cfg_city" value="上海" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">签署城市</label>
+                    <input type="text" id="cfg_city" value="上海" class="w-full bg-transparent text-slate-900 font-bold outline-none">
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">注册资本注入 (万)</label>
-                    <input type="number" id="cfg_reg_cap" value="10" class="w-full border-b-2 border-slate-200 focus:border-emerald-500 py-1 outline-none font-semibold text-emerald-600">
+                <div class="glass-panel p-5 rounded-2xl input-card">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">注册资本注入 (万)</label>
+                    <input type="number" id="cfg_reg_cap" value="10" class="w-full bg-transparent text-emerald-600 font-black outline-none text-lg">
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 2: ROI & Multiple Analysis -->
+        <!-- SECTION 2: ROI & Performance Dashboard -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Deal Params (Left) -->
-            <div class="lg:col-span-1 glass-panel rounded-3xl p-8 space-y-8">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">核心投资筹码</h3>
-                
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-xs font-bold text-slate-600">融资金额 (本金)</span>
-                            <span class="text-emerald-600 font-bold" id="val_invest">70 万</span>
+            <!-- Left: Inputs -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="glass-panel rounded-3xl p-8 space-y-8 h-full">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">核心投资筹码</h3>
+                    <div class="space-y-8">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-600">融资金额 (本金)</span>
+                                <span class="text-xl font-black text-emerald-600" id="val_invest">70 万</span>
+                            </div>
+                            <input type="range" id="slider_invest" min="10" max="2000" step="10" value="70">
                         </div>
-                        <input type="range" id="slider_invest" min="10" max="500" step="10" value="70">
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-xs font-bold text-slate-600">持股比例</span>
-                            <span class="text-emerald-600 font-bold" id="val_equity">12 %</span>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-600">持股比例</span>
+                                <span class="text-xl font-black text-emerald-600" id="val_equity">12 %</span>
+                            </div>
+                            <input type="range" id="slider_equity" min="1" max="45" step="0.5" value="12">
                         </div>
-                        <input type="range" id="slider_equity" min="1" max="40" step="0.5" value="12">
                     </div>
-                </div>
-
-                <div class="pt-6 border-t border-slate-100">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">当前投后估值</p>
-                    <p class="text-3xl font-black text-slate-800" id="val_postmoney">--</p>
+                    <div class="pt-8 border-t border-slate-100 grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">投后估值</p>
+                            <p class="text-xl font-black text-slate-800" id="val_postmoney">--</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-2xl">
+                            <p class="text-[10px] text-emerald-700 font-bold uppercase mb-1">单点成本</p>
+                            <p class="text-xl font-black text-emerald-800" id="val_cost_per_pct">--</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Projections & Multiplier (Center & Right) -->
-            <div class="lg:col-span-2 glass-panel rounded-3xl p-8 border-t-8 border-emerald-600">
-                <div class="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
+            <!-- Right: Outcomes -->
+            <div class="lg:col-span-2 glass-panel rounded-3xl p-8 border-t-8 border-emerald-500 flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start mb-10 gap-4">
                     <div>
-                        <h3 class="text-xl font-black text-slate-900">投资收益与倍数预测</h3>
-                        <p class="text-sm text-slate-500">模拟公司成长后的回报情况</p>
+                        <h3 class="text-2xl font-black text-slate-900 tracking-tight">退出收益与套现模拟</h3>
+                        <p class="text-sm text-slate-500">动态计算不同增长阶段的实际现金回报</p>
                     </div>
-                    <button id="btn_20x" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors flex items-center">
-                        <span class="mr-2">🚀</span> 模拟 A 轮 (20倍增长)
+                    <button id="btn_20x" class="group bg-slate-900 text-white px-6 py-3 rounded-2xl text-xs font-bold hover:scale-105 transition-all shadow-2xl flex items-center">
+                        <span class="mr-2">🚀</span> 一键 A 轮 (20x)
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="text-xs font-bold text-slate-500 uppercase">未来预期估值 (万)</label>
-                                <span class="text-lg font-black text-slate-800" id="val_future">2000 万</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-8">
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-bold text-slate-500 uppercase">未来预期总估值 (万)</label>
+                                <span class="text-xl font-black text-slate-800" id="val_future">2000 万</span>
                             </div>
-                            <input type="range" id="slider_future" min="100" max="20000" step="100" value="2000">
+                            <input type="range" id="slider_future" min="100" max="30000" step="100" value="2000">
                         </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-emerald-600 rounded-2xl text-white shadow-lg">
-                                <p class="text-[10px] font-bold opacity-70 uppercase mb-1">回报倍数 (X)</p>
-                                <p class="text-3xl font-black" id="res_multiplier">--</p>
+                        <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-bold text-emerald-700 uppercase">转让手中持股 (%)</label>
+                                <span class="text-xl font-black text-emerald-900" id="val_sell_ratio">50 %</span>
                             </div>
-                            <div class="p-4 bg-white border border-slate-200 rounded-2xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">股权账面价值</p>
-                                <p class="text-xl font-bold text-slate-800" id="res_paper_wealth">--</p>
-                            </div>
+                            <input type="range" id="slider_sell_ratio" min="0" max="100" step="5" value="50">
                         </div>
                     </div>
 
-                    <div class="chart-container">
-                        <canvas id="growthChart"></canvas>
+                    <div class="space-y-5">
+                        <div class="p-6 bg-slate-900 rounded-3xl text-white shadow-2xl relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500 rounded-full opacity-10 blur-2xl group-hover:opacity-30 transition-opacity"></div>
+                            <p class="text-[10px] font-bold opacity-60 uppercase mb-2">本次套现金额 (已实现收益)</p>
+                            <p class="text-5xl font-black text-emerald-400" id="res_cash_out">--</p>
+                            <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                                <span class="text-xs opacity-60" id="res_net_profit">净获利: --</span>
+                                <span class="bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded text-[10px] font-bold" id="res_roi_badge">--x ROI</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-5 bg-white border border-slate-200 rounded-3xl">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">剩余持股比例</p>
+                                <p class="text-2xl font-black text-slate-800" id="res_remain_eq">--</p>
+                            </div>
+                            <div class="p-5 bg-white border border-slate-200 rounded-3xl">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">剩余账面价值</p>
+                                <p class="text-2xl font-black text-slate-800" id="res_remain_wealth">--</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-6 text-center italic">* 提示：此倍数未考虑后续轮次的融资稀释。A 轮融资通常会产生 15%-25% 的稀释。</p>
+
+                <div class="mt-auto pt-10 flex items-center justify-between">
+                    <div class="flex-1 max-w-sm h-32">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400 font-black uppercase mb-1 tracking-widest">综合回报倍数 (账面+现金)</p>
+                        <p class="text-6xl font-black text-emerald-600" id="res_multiplier">--</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- SECTION 3: Liquidation Simulator -->
-        <section class="glass-panel rounded-3xl p-8">
-            <div class="flex justify-between items-end mb-8">
+        <section class="glass-panel rounded-3xl p-10 bg-slate-100/30">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
                 <div>
-                    <h3 class="text-xl font-black">并购退出清算分配 (Waterfall)</h3>
-                    <p class="text-sm text-slate-500">模拟清算优先权条款下的利益保护</p>
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tight">并购清算分配瀑布 (Waterfall)</h3>
+                    <p class="text-sm text-slate-500">模拟在极端退出情况下的 1.0x 优先权分配逻辑</p>
                 </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">退出总金额</p>
-                    <span class="text-xl font-black text-orange-600" id="val_exit">500 万</span>
-                    <input type="range" id="slider_exit" min="0" max="5000" step="50" value="500" class="block w-48 mt-2">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm min-w-[280px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-bold text-slate-400 uppercase">并购退出价格 (万)</label>
+                        <span class="text-2xl font-black text-orange-600" id="val_exit">500 万</span>
+                    </div>
+                    <input type="range" id="slider_exit" min="0" max="40000" step="100" value="500">
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                <div class="md:col-span-2 h-40">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+                <div class="md:col-span-2 h-44">
                     <canvas id="liqChart"></canvas>
                 </div>
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                    <div class="space-y-4">
-                        <div class="flex justify-between border-b border-slate-200 pb-2">
-                            <span class="text-xs text-slate-500 font-bold">投资方分得:</span>
-                            <span class="text-sm font-black text-emerald-700" id="res_inv_liq">--</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-slate-500 font-bold">创始人分得:</span>
-                            <span class="text-sm font-black text-slate-800" id="res_fnd_liq">--</span>
-                        </div>
+                <div class="space-y-4">
+                    <div class="p-6 bg-slate-900 rounded-3xl text-white shadow-xl">
+                        <p class="text-[10px] font-bold opacity-60 uppercase mb-2">投资方总额 (LP+GP)</p>
+                        <p class="text-4xl font-black text-emerald-400" id="res_inv_liq">--</p>
+                        <p class="text-xs mt-3 opacity-40 font-medium" id="res_inv_liq_detail">本金: -- | 剩余分红: --</p>
+                    </div>
+                    <div class="p-6 bg-white border border-slate-200 rounded-3xl">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">创始人/团队总额</p>
+                        <p class="text-4xl font-black text-slate-800" id="res_fnd_liq">--</p>
                     </div>
                 </div>
             </div>
@@ -231,80 +277,70 @@
 
     </main>
 
-    <!-- SECTION 4: Formal Legal Document (Print Optimized) -->
-    <div class="max-w-4xl mx-auto bg-white p-16 mb-20 shadow-2xl legal-document border border-slate-100">
-        <h1 class="text-3xl font-bold text-center mb-16 border-b-2 border-slate-900 pb-8 uppercase tracking-widest">投资意向书 (Term Sheet)</h1>
+    <!-- SECTION 4: Professional Document -->
+    <div id="document_section" class="max-w-4xl mx-auto bg-white p-20 mb-20 shadow-2xl legal-document border border-slate-100 relative">
+        <h1 class="text-3xl font-bold text-center mb-16 border-b-2 border-slate-900 pb-10 uppercase tracking-[0.2em]">投资意向书 (Term Sheet)</h1>
         
-        <div class="space-y-10 text-sm">
-            <div class="grid grid-cols-2 gap-y-4 gap-x-12 border-b border-slate-100 pb-8">
-                <p><strong>项目名称：</strong> <span class="doc-company font-bold text-emerald-800 underline">极客科技</span> 天使轮融资</p>
+        <div class="space-y-12 text-sm">
+            <div class="grid grid-cols-2 gap-y-6 gap-x-12 border-b border-slate-100 pb-10">
+                <p><strong>项目名称：</strong> <span class="doc-company font-bold underline decoration-emerald-500/30">极客科技</span> 天使轮融资</p>
                 <p><strong>签署日期：</strong> <span class="doc-date font-bold">2026年 03月 29日</span></p>
                 <p><strong>签署地点：</strong> <span class="doc-city font-bold">上海</span></p>
             </div>
 
-            <p class="text-justify leading-relaxed">
+            <p class="text-justify indent-8 text-base">
                 本投资意向书（以下简称“本意向书”）由以下各方于上述日期签署，旨在记录各方就投资方对目标公司进行天使轮融资达成的初步共识。
             </p>
 
-            <div class="space-y-8">
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">1. 投资基本方案</h3>
-                    <div class="pl-7 space-y-2">
-                        <p><strong>投资方：</strong> <span class="doc-investor">[投资人姓名]</span>（以下简称“投资人”）</p>
-                        <p><strong>目标公司：</strong> <span class="doc-company">[公司全称]</span>（以下简称“公司”）</p>
-                        <p><strong>融资金额：</strong> 人民币 <span class="doc-invest-amt font-bold">70</span> 万元。</p>
-                        <p><strong>持股比例：</strong> 投资人投后持股 <span class="doc-equity font-bold">12</span>%。</p>
+            <div class="space-y-10">
+                <div class="space-y-5">
+                    <h3 class="text-xl font-bold border-l-4 border-slate-900 pl-4 uppercase tracking-wider">1. 投资基本方案</h3>
+                    <div class="pl-8 space-y-3 text-base">
+                        <p><strong>投资方：</strong> <span class="doc-investor font-bold">[投资人姓名]</span>（以下简称“投资人”）</p>
+                        <p><strong>目标公司：</strong> <span class="doc-company font-bold">[公司全称]</span>（以下简称“公司”）</p>
+                        <p><strong>融资金额：</strong> 人民币 <span class="doc-invest-amt font-bold text-emerald-700">70</span> 万元。</p>
+                        <p><strong>持股比例：</strong> 投资人投后持股 <span class="doc-equity font-bold text-emerald-700">12</span>%。</p>
                         <p><strong>出资结构：</strong></p>
-                        <ul class="list-disc pl-6 space-y-1">
+                        <ul class="list-disc pl-10 space-y-2">
                             <li>人民币 <span class="doc-reg-cap font-bold">10</span> 万元进入公司注册资本；</li>
                             <li>人民币 <span class="doc-surplus-cap font-bold">60</span> 万元进入公司资本公积。</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">2. 清算优先权</h3>
-                    <div class="pl-7 space-y-3 text-justify">
+                <div class="space-y-5">
+                    <h3 class="text-xl font-bold border-l-4 border-slate-900 pl-4 uppercase tracking-wider">2. 清算优先权</h3>
+                    <div class="pl-8 space-y-4 text-justify text-base">
                         <p>若公司发生清算、解散或根据法律被视为清算的事由（如并购、整体出售、实际控制权变更）：</p>
                         <p><strong>第一顺位：</strong> 清算收入应优先向投资人支付，金额不超过其实际出资额（即人民币 <span class="doc-invest-amt">70</span> 万元）。若公司清算可分配资产不足该金额，则应全部支付给投资人。</p>
                         <p><strong>第二顺位：</strong> 在支付完上述投资本金后，剩余资产由全体股东按照届时各自的持股比例进行分配。</p>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">3. 股份转让限制与优先购买权</h3>
-                    <div class="pl-7 space-y-3">
+                <div class="space-y-5">
+                    <h3 class="text-xl font-bold border-l-4 border-slate-900 pl-4 uppercase tracking-wider">3. 股份转让限制与优先购买权</h3>
+                    <div class="pl-8 space-y-4 text-base">
                         <p><strong>对外转让限制：</strong> 未经公司创始人书面同意，投资人不得向公司的竞争者转让或质押其持有的公司股权。</p>
                         <p><strong>优先购买权：</strong> 若投资人拟向第三方转让股权，创始人 <span class="doc-founder font-bold">__</span> 享有按同等条件优先购买该部分股权的权利。</p>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">4. 利润分配</h3>
-                    <p class="pl-7">公司产生的可分配利润，在提取法定公积金后，由全体股东按照其实际持股比例进行分红。</p>
+                <div class="space-y-5">
+                    <h3 class="text-xl font-bold border-l-4 border-slate-900 pl-4 uppercase tracking-wider">4. 利润分配</h3>
+                    <p class="pl-8 text-base">公司产生的可分配利润，在提取法定公积金后，由全体股东按照其实际持股比例进行分红。</p>
                 </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">5. 保密条款</h3>
-                    <p class="pl-7 text-justify italic text-slate-500">各方应对本意向书内容承担严格保密义务，未经允许不得向第三方披露。</p>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold border-l-4 border-slate-900 pl-3 uppercase">6. 法律效力</h3>
-                    <p class="pl-7">本意向书仅作为初步共识。除第5条、第6条外不具法律约束力。最终以签署的正式协议为准。</p>
-                </div>
-            </div>
-
-            <div class="pt-24 grid grid-cols-2 gap-24">
-                <div class="space-y-8">
-                    <p class="font-bold border-b-2 border-slate-900 pb-2 uppercase">创始人（代表公司）：</p>
-                    <div class="pt-10 text-slate-300 italic border-b border-slate-200">签字/盖章: ________________</div>
-                    <div class="text-xs">日期: <span class="doc-date">2026年 03月 29日</span></div>
-                </div>
-                <div class="space-y-8">
-                    <p class="font-bold border-b-2 border-slate-900 pb-2 uppercase">投资方：</p>
-                    <div class="pt-10 text-slate-300 italic border-b border-slate-200">签字/盖章: ________________</div>
-                    <div class="text-xs">日期: <span class="doc-date">2026年 03月 29日</span></div>
+                <div class="pt-16 grid grid-cols-2 gap-24">
+                    <div class="space-y-10">
+                        <p class="font-bold border-b-2 border-slate-900 pb-2 uppercase tracking-widest">创始人（代表公司）：</p>
+                        <div class="pt-12 text-slate-300 italic border-b border-slate-200">签字/盖章: ________________</div>
+                        <div class="text-[10px] text-slate-400">日期: <span class="doc-date">2026年 03月 29日</span></div>
+                    </div>
+                    <div class="space-y-10">
+                        <p class="font-bold border-b-2 border-slate-900 pb-2 uppercase tracking-widest">投资方：</p>
+                        <div class="pt-12 text-slate-300 italic border-b border-slate-200">签字/盖章: ________________</div>
+                        <div class="text-[10px] text-slate-400">日期: <span class="doc-date">2026年 03月 29日</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -312,7 +348,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- UI Bindings ---
+            // --- Elements ---
             const inputs = {
                 company: document.getElementById('cfg_company'),
                 founder: document.getElementById('cfg_founder'),
@@ -323,6 +359,7 @@
                 invest: document.getElementById('slider_invest'),
                 equity: document.getElementById('slider_equity'),
                 future: document.getElementById('slider_future'),
+                sellRatio: document.getElementById('slider_sell_ratio'),
                 exit: document.getElementById('slider_exit')
             };
 
@@ -330,83 +367,85 @@
                 val_invest: document.getElementById('val_invest'),
                 val_equity: document.getElementById('val_equity'),
                 val_postmoney: document.getElementById('val_postmoney'),
+                val_cost_per_pct: document.getElementById('val_cost_per_pct'),
                 val_future: document.getElementById('val_future'),
+                val_sell_ratio: document.getElementById('val_sell_ratio'),
                 val_exit: document.getElementById('val_exit'),
                 res_multiplier: document.getElementById('res_multiplier'),
-                res_paper: document.getElementById('res_paper_wealth'),
+                res_cash_out: document.getElementById('res_cash_out'),
+                res_net_profit: document.getElementById('res_net_profit'),
+                res_roi_badge: document.getElementById('res_roi_badge'),
+                res_remain_eq: document.getElementById('res_remain_eq'),
+                res_remain_wealth: document.getElementById('res_remain_wealth'),
                 res_inv_liq: document.getElementById('res_inv_liq'),
+                res_inv_liq_detail: document.getElementById('res_inv_liq_detail'),
                 res_fnd_liq: document.getElementById('res_fnd_liq')
             };
 
             // --- Charts ---
-            const growthCtx = document.getElementById('growthChart').getContext('2d');
-            const growthChart = new Chart(growthCtx, {
+            const growthChart = new Chart(document.getElementById('growthChart').getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: ['天使轮 (当前)', '增长中', '预期目标'],
+                    labels: ['初始', '50%', '目标'],
                     datasets: [{
-                        label: '股权账面价值',
+                        label: '股权价值',
                         data: [0, 0, 0],
-                        borderColor: '#059669',
-                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 2
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true, tension: 0.4, pointRadius: 0
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, display: false }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
-            const liqCtx = document.getElementById('liqChart').getContext('2d');
-            const liqChart = new Chart(liqCtx, {
+            const liqChart = new Chart(document.getElementById('liqChart').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: ['分配'],
                     datasets: [
                         { label: '优先本金', data: [0], backgroundColor: '#0f172a' },
-                        { label: '投资人分红', data: [0], backgroundColor: '#059669' },
+                        { label: '投资人分红', data: [0], backgroundColor: '#10b981' },
                         { label: '团队分红', data: [0], backgroundColor: '#e2e8f0' }
                     ]
                 },
-                options: {
-                    indexAxis: 'y',
-                    maintainAspectRatio: false,
-                    scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } },
-                    plugins: { legend: { display: false } }
-                }
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } }, plugins: { legend: { display: false } } }
             });
 
-            // --- Logic Update ---
+            // --- Update Core ---
             function update() {
                 const inv = parseFloat(inputs.invest.value);
                 const eq = parseFloat(inputs.equity.value);
                 const fut = parseFloat(inputs.future.value);
+                const sellRatio = parseFloat(inputs.sellRatio.value) / 100;
                 const exit = parseFloat(inputs.exit.value);
                 const reg = parseFloat(inputs.regCap.value);
 
+                // Calculations
                 const postMoney = inv / (eq / 100);
-                const paperVal = fut * (eq / 100);
-                const mult = paperVal / inv;
+                const costPerPct = inv / eq;
+                const totalStakeVal = fut * (eq / 100);
+                const cashOut = totalStakeVal * sellRatio;
+                const costOfSold = inv * sellRatio;
+                const netProfit = cashOut - costOfSold;
+                const remainEq = eq * (1 - sellRatio);
+                const remainWealth = fut * (remainEq / 100);
+                const totalMult = (cashOut + remainWealth) / inv;
 
-                // Sync UI
-                displays.val_invest.textContent = inv + " 万";
-                displays.val_equity.textContent = eq + " %";
-                displays.val_postmoney.textContent = postMoney.toFixed(1) + " 万元";
-                displays.val_future.textContent = fut + " 万";
-                displays.val_exit.textContent = exit + " 万";
-                displays.res_multiplier.textContent = mult.toFixed(1) + " X";
-                displays.res_paper.textContent = paperVal.toFixed(1) + " 万";
+                // Displays
+                displays.val_invest.innerText = inv + " 万";
+                displays.val_equity.innerText = eq + " %";
+                displays.val_postmoney.innerText = postMoney.toFixed(0) + " 万";
+                displays.val_cost_per_pct.innerText = costPerPct.toFixed(1) + " 万/%";
+                displays.val_future.innerText = fut + " 万";
+                displays.val_sell_ratio.innerText = (sellRatio * 100).toFixed(0) + " %";
+                displays.val_exit.innerText = exit + " 万";
 
-                // Update Growth Chart
-                growthChart.data.datasets[0].data = [inv, (inv + paperVal)/2, paperVal];
-                growthChart.update();
+                displays.res_cash_out.innerText = cashOut.toFixed(1) + " 万";
+                displays.res_net_profit.innerText = `净获利: ${netProfit.toFixed(1)} 万`;
+                displays.res_roi_badge.innerText = (cashOut / costOfSold || 0).toFixed(1) + "x ROI";
+                displays.res_remain_eq.innerText = remainEq.toFixed(1) + " %";
+                displays.res_remain_wealth.innerText = remainWealth.toFixed(1) + " 万";
+                displays.res_multiplier.innerText = totalMult.toFixed(1) + "x";
 
                 // Liquidation
                 let pref = Math.min(exit, inv);
@@ -414,41 +453,52 @@
                 let invDiv = remain * (eq / 100);
                 let fndDiv = remain * ((100 - eq) / 100);
 
-                displays.res_inv_liq.textContent = (pref + invDiv).toFixed(1) + " 万";
-                displays.res_fnd_liq.textContent = fndDiv.toFixed(1) + " 万";
+                displays.res_inv_liq.innerText = (pref + invDiv).toFixed(1) + " 万";
+                displays.res_inv_liq_detail.innerText = `本金: ${pref.toFixed(1)} | 分红: ${invDiv.toFixed(1)}`;
+                displays.res_fnd_liq.innerText = fndDiv.toFixed(1) + " 万";
 
+                // Sync Charts
+                growthChart.data.datasets[0].data = [inv, (inv + totalStakeVal)/2, totalStakeVal];
+                growthChart.update('none');
                 liqChart.data.datasets[0].data = [pref];
                 liqChart.data.datasets[1].data = [invDiv];
                 liqChart.data.datasets[2].data = [fndDiv];
-                liqChart.update();
+                liqChart.update('none');
 
-                // Doc Sync
-                document.querySelectorAll('.doc-company').forEach(el => el.textContent = inputs.company.value);
-                document.querySelectorAll('.doc-investor').forEach(el => el.textContent = inputs.investor.value);
-                document.querySelectorAll('.doc-founder').forEach(el => el.textContent = inputs.founder.value);
-                document.querySelectorAll('.doc-city').forEach(el => el.textContent = inputs.city.value);
-                document.querySelectorAll('.doc-invest-amt').forEach(el => el.textContent = inv);
-                document.querySelectorAll('.doc-equity').forEach(el => el.textContent = eq);
-                document.querySelectorAll('.doc-reg-cap').forEach(el => el.textContent = reg);
-                document.querySelectorAll('.doc-surplus-cap').forEach(el => el.textContent = (inv - reg).toFixed(1));
+                // Sync Document
+                document.querySelectorAll('.doc-company').forEach(el => el.innerText = inputs.company.value);
+                document.querySelectorAll('.doc-investor').forEach(el => el.innerText = inputs.investor.value);
+                document.querySelectorAll('.doc-founder').forEach(el => el.innerText = inputs.founder.value);
+                document.querySelectorAll('.doc-city').forEach(el => el.innerText = inputs.city.value);
+                document.querySelectorAll('.doc-invest-amt').forEach(el => el.innerText = inv);
+                document.querySelectorAll('.doc-equity').forEach(el => el.innerText = eq);
+                document.querySelectorAll('.doc-reg-cap').forEach(el => el.innerText = reg);
+                document.querySelectorAll('.doc-surplus-cap').forEach(el => el.innerText = (inv - reg).toFixed(1));
 
                 if (inputs.date.value) {
                     const d = new Date(inputs.date.value);
                     const ds = `${d.getFullYear()}年 ${(d.getMonth()+1).toString().padStart(2,'0')}月 ${d.getDate().toString().padStart(2,'0')}日`;
-                    document.querySelectorAll('.doc-date').forEach(el => el.textContent = ds);
+                    document.querySelectorAll('.doc-date').forEach(el => el.innerText = ds);
                 }
+
+                // Visual flash on document fields for feedback
+                document.querySelectorAll('#document_section span').forEach(el => {
+                    el.classList.add('sync-flash');
+                    setTimeout(() => el.classList.remove('sync-flash'), 1000);
+                });
             }
 
-            // --- Features ---
+            // --- Interactions ---
             document.getElementById('btn_20x').addEventListener('click', () => {
-                const currentPost = parseFloat(inputs.invest.value) / (parseFloat(inputs.equity.value) / 100);
-                const targetVal = currentPost * 20;
-                inputs.future.value = Math.min(20000, targetVal);
+                const post = parseFloat(inputs.invest.value) / (parseFloat(inputs.equity.value) / 100);
+                inputs.future.value = post * 20;
+                inputs.exit.value = post * 20;
                 update();
             });
 
-            // --- Listeners ---
             Object.values(inputs).forEach(el => el.addEventListener('input', update));
+            
+            // Init
             update();
         });
     </script>
