@@ -57,30 +57,30 @@
 
     <!-- ==================== 登录验证屏 ==================== -->
     <div id="auth-screen" class="absolute inset-0 z-50 bg-slate-950 flex items-center justify-center p-4 transition-opacity duration-500">
-        <div class="bg-slate-900 border border-slate-800 p-10 rounded-3xl shadow-2xl max-w-md w-full relative overflow-hidden z-10">
+        <div class="bg-slate-900 border border-slate-800 p-8 md:p-10 rounded-3xl shadow-2xl max-w-md w-full relative overflow-hidden z-10">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-emerald-500"></div>
             
-            <div class="flex justify-center mb-8">
-                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 shadow-inner">
-                    <i class="fa-solid fa-lock text-4xl text-blue-500"></i>
+            <div class="flex justify-center mb-6 md:mb-8">
+                <div class="bg-slate-950 p-4 md:p-5 rounded-2xl border border-slate-800 shadow-inner">
+                    <i class="fa-solid fa-lock text-3xl md:text-4xl text-blue-500"></i>
                 </div>
             </div>
             
-            <h2 class="text-3xl font-bold text-center text-white mb-2 tracking-wide">商业计划书查阅</h2>
-            <p class="text-slate-400 text-center mb-10 text-sm">文档包含未公开商业数据，需授权访问</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-white mb-2 tracking-wide">商业计划书查阅</h2>
+            <p class="text-slate-400 text-center mb-8 md:mb-10 text-xs md:text-sm">文档包含未公开商业数据，需授权访问</p>
             
             <form id="login-form" class="space-y-6">
                 <div>
                     <label class="block text-xs font-bold tracking-widest text-slate-500 uppercase mb-2">访问密码</label>
                     <input type="password" id="password-input" 
-                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-4 text-white text-lg tracking-widest focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-700 placeholder:text-sm placeholder:tracking-normal"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 md:py-4 text-white text-base md:text-lg tracking-widest focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-700 placeholder:text-xs md:placeholder:text-sm placeholder:tracking-normal"
                         placeholder="密码提示：财富密码" autocomplete="off">
                     <div id="error-msg" class="hidden mt-3 text-red-400 text-sm flex items-center bg-red-400/10 p-2 rounded">
                         <span class="w-1.5 h-1.5 rounded-full bg-red-400 mr-2"></span> 密码错误，请重新输入
                     </div>
                 </div>
                 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-4 rounded-xl transition-all flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)]">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 md:py-4 px-4 rounded-xl transition-all flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)]">
                     <i class="fa-solid fa-unlock mr-2"></i> 解锁并查看演示
                 </button>
             </form>
@@ -90,59 +90,68 @@
     <!-- ==================== PPT 演示屏 (全屏模式) ==================== -->
     <div id="ppt-screen" class="w-full h-full bg-slate-900 relative flex flex-col overflow-hidden opacity-0 pointer-events-none transition-opacity duration-500 scale-95">
         
-        <!-- 标题栏 -->
-        <div id="slide-header" class="h-24 px-12 flex items-center border-b border-slate-800/80 shrink-0 bg-slate-900 z-20 transition-opacity duration-300">
-            <div class="mr-5 bg-slate-800 p-3 rounded-xl border border-slate-700">
-                <i id="slide-icon" class="fa-solid fa-chart-simple text-blue-400 text-2xl"></i>
+        <!-- 标题栏：去除了 truncate，增加了自适应高度和断行适配 -->
+        <div id="slide-header" class="min-h-[4rem] md:min-h-[6rem] py-3 md:py-0 px-4 md:px-12 flex items-center border-b border-slate-800/80 shrink-0 bg-slate-900 z-20 transition-opacity duration-300">
+            <div class="mr-3 md:mr-5 bg-slate-800 p-2 md:p-3 rounded-lg md:rounded-xl border border-slate-700 shrink-0">
+                <i id="slide-icon" class="fa-solid fa-chart-simple text-blue-400 text-lg md:text-2xl"></i>
             </div>
-            <h1 id="slide-title" class="text-3xl font-bold text-white tracking-wide">加载中...</h1>
+            <!-- 修改了这里：移动端缩小字号，开启 break-words 完美换行 -->
+            <h1 id="slide-title" class="text-sm sm:text-lg md:text-3xl font-bold text-white tracking-wide leading-snug break-words">加载中...</h1>
         </div>
 
         <!-- 核心内容区 -->
         <div class="flex-1 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-900 to-slate-950" id="slides-container">
             
-            <!-- Slide 0: 封面 -->
-            <div class="slide slide-active flex flex-col items-center justify-center text-center bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800" data-title="封面" data-icon="fa-rocket">
-                <div class="p-6 bg-blue-500/10 rounded-2xl mb-8 relative z-10">
-                    <i class="fa-solid fa-rocket text-7xl text-blue-500"></i>
+            <!-- 移动端专属下滑提示 (智能显示/隐藏) -->
+            <div id="mobile-scroll-hint" class="md:hidden absolute bottom-0 left-0 w-full flex flex-col items-center justify-end pb-3 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent h-24 z-30 opacity-0 pointer-events-none transition-opacity duration-300">
+                <div class="animate-bounce flex flex-col items-center text-blue-400">
+                    <span class="text-[10px] font-bold tracking-widest mb-1 drop-shadow-md shadow-black">下滑查看内容</span>
+                    <i class="fa-solid fa-angles-down text-lg drop-shadow-md shadow-black"></i>
                 </div>
-                <h1 class="text-7xl font-bold tracking-tight text-white mb-8 relative z-10">商业计划书 <span class="text-blue-500 font-light text-6xl">BP</span></h1>
-                <p class="text-3xl text-slate-300 font-light tracking-wide relative z-10">基于结构化数据的职教与 K12 选课智能匹配平台</p>
-                <div class="w-32 h-1 bg-blue-500 rounded-full mt-12 opacity-50 relative z-10"></div>
-                <div class="absolute bottom-10 text-slate-500 text-sm tracking-widest uppercase relative z-10">Confidential & Proprietary</div>
+            </div>
+
+            <!-- Slide 0: 封面 -->
+            <div class="slide slide-active flex flex-col items-center justify-center text-center bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 overflow-y-auto px-6" data-title="封面" data-icon="fa-rocket">
+                <div class="p-4 md:p-6 bg-blue-500/10 rounded-2xl mb-6 md:mb-8 relative z-10 mt-8 md:mt-0">
+                    <i class="fa-solid fa-rocket text-5xl md:text-7xl text-blue-500"></i>
+                </div>
+                <h1 class="text-4xl md:text-7xl font-bold tracking-tight text-white mb-4 md:mb-8 relative z-10 leading-tight">商业计划书 <span class="text-blue-500 font-light text-3xl md:text-6xl block md:inline mt-2 md:mt-0">BP</span></h1>
+                <p class="text-lg md:text-3xl text-slate-300 font-light tracking-wide relative z-10 px-4">基于结构化数据的职教与 K12 选课智能匹配平台</p>
+                <div class="w-16 md:w-32 h-1 bg-blue-500 rounded-full mt-8 md:mt-12 opacity-50 relative z-10"></div>
+                <div class="mt-10 md:absolute md:bottom-10 text-slate-500 text-xs md:text-sm tracking-widest uppercase relative z-10 mb-8 md:mb-0">Confidential & Proprietary</div>
             </div>
 
             <!-- Slide 1: 宏观 K12 -->
-            <div class="slide slide-hidden-right flex flex-col justify-center px-20 space-y-12" data-title="宏观数据与行业表现: 抗周期 (1/2)" data-icon="fa-chart-pie">
-                <div class="border-l-4 border-blue-500 pl-5 mb-2 relative z-10">
-                    <h2 class="text-4xl font-bold text-white">1. K12 教育：刚需抗周期</h2>
-                    <p class="text-slate-400 mt-3 text-xl">养育成本/年均 GDP=6.3，教育支出占绝对主导</p>
+            <div class="slide slide-hidden-right flex flex-col justify-start md:justify-center px-6 md:px-20 py-8 md:py-0 space-y-8 md:space-y-12 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="宏观数据与行业表现: 抗周期 (1/2)" data-icon="fa-chart-pie">
+                <div class="border-l-4 border-blue-500 pl-4 md:pl-5 mb-2 relative z-10 shrink-0">
+                    <h2 class="text-2xl md:text-4xl font-bold text-white">1. K12 教育：刚需抗周期</h2>
+                    <p class="text-slate-400 mt-2 md:mt-3 text-sm md:text-xl">养育成本/年均 GDP=6.3，教育支出占绝对主导</p>
                 </div>
-                <div class="grid grid-cols-3 gap-10 relative z-10">
-                    <div class="bg-slate-800/80 p-10 rounded-3xl border border-slate-700">
-                        <div class="text-6xl font-black text-blue-400 mb-6">45.6%</div>
-                        <h3 class="text-2xl font-bold text-white mb-4">支出占比极高</h3>
-                        <p class="text-slate-400 text-base leading-relaxed mb-4">普通家庭养育支出占总消费比例。消费降级背景下，核心教育支出未现显著下滑。</p>
-                        <div class="text-sm bg-slate-900/50 p-3 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 relative z-10 shrink-0 pb-8 md:pb-0">
+                    <div class="bg-slate-800/80 p-6 md:p-10 rounded-2xl md:rounded-3xl border border-slate-700">
+                        <div class="text-4xl md:text-6xl font-black text-blue-400 mb-4 md:mb-6">45.6%</div>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">支出占比极高</h3>
+                        <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-4">普通家庭养育支出占总消费比例。消费降级背景下，核心教育支出未现显著下滑。</p>
+                        <div class="text-xs md:text-sm bg-slate-900/50 p-3 rounded-lg">
                             数据源：<br>
                             <a href="https://file.c-ctrip.com/files/6/yuwa/0R72u12000d9cuimnBF37.pdf" target="_blank" class="link-item">育娲研究《中国生育成本报告》<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a><br>
                             <a href="https://ciefr.pku.edu.cn/docs//2025-11/7a932131bc8443fbbbd19c713b746e78.pdf" target="_blank" class="link-item mt-1">北大中国教财所研报<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                         </div>
                     </div>
-                    <div class="bg-slate-800/80 p-10 rounded-3xl border border-slate-700">
-                        <div class="text-6xl font-black text-blue-400 mb-6">&gt;95%</div>
-                        <h3 class="text-2xl font-bold text-white mb-4">需求转化 ROI 导向</h3>
-                        <p class="text-slate-400 text-base leading-relaxed mb-4">决策向“提分/升学”收敛。素养课转化率仅15%，升学课满班率超95%，家长试错容忍度低。</p>
-                        <div class="text-sm bg-slate-900/50 p-3 rounded-lg">
+                    <div class="bg-slate-800/80 p-6 md:p-10 rounded-2xl md:rounded-3xl border border-slate-700">
+                        <div class="text-4xl md:text-6xl font-black text-blue-400 mb-4 md:mb-6">&gt;95%</div>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">需求转化 ROI 导向</h3>
+                        <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-4">决策向“提分/升学”收敛。素养课转化率仅15%，升学课满班率超95%，家长试错容忍度低。</p>
+                        <div class="text-xs md:text-sm bg-slate-900/50 p-3 rounded-lg">
                             案例源：<br>
                             <a href="https://www.iresearch.com.cn/" target="_blank" class="link-item">艾瑞咨询《教培行业白皮书》<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                         </div>
                     </div>
-                    <div class="bg-slate-800/80 p-10 rounded-3xl border border-slate-700">
-                        <div class="text-6xl font-black text-blue-400 mb-6">+40%</div>
-                        <h3 class="text-2xl font-bold text-white mb-4">大盘强势复苏</h3>
-                        <p class="text-slate-400 text-base leading-relaxed mb-4">头部企业营收复合增长恢复至 25%。好未来 24 财年净收入同比大增 40%，印证刚需。</p>
-                        <div class="text-sm bg-slate-900/50 p-3 rounded-lg">
+                    <div class="bg-slate-800/80 p-6 md:p-10 rounded-2xl md:rounded-3xl border border-slate-700">
+                        <div class="text-4xl md:text-6xl font-black text-blue-400 mb-4 md:mb-6">+40%</div>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">大盘强势复苏</h3>
+                        <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-4">头部企业营收复合增长恢复至 25%。好未来 24 财年净收入同比大增 40%，印证刚需。</p>
+                        <div class="text-xs md:text-sm bg-slate-900/50 p-3 rounded-lg">
                             投资者关系 (IR)：<br>
                             <a href="https://ir.100tal.com/" target="_blank" class="link-item">好未来 (TAL)<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> | 
                             <a href="https://ir.gaotu.cn/" target="_blank" class="link-item">高途 (GOTU)<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
@@ -152,45 +161,45 @@
             </div>
 
             <!-- Slide 2: 宏观 职教 -->
-            <div class="slide slide-hidden-right flex flex-col justify-center px-24 space-y-10" data-title="宏观数据与行业表现: 反周期 (2/2)" data-icon="fa-briefcase">
-                <div class="border-l-4 border-indigo-500 pl-5 mb-4 relative z-10">
-                    <h2 class="text-4xl font-bold text-white tracking-wide">2. 职业教育：反周期爆发，技能重塑驱动</h2>
+            <div class="slide slide-hidden-right flex flex-col justify-start md:justify-center px-6 md:px-24 py-8 md:py-0 space-y-6 md:space-y-10 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="宏观数据与行业表现: 反周期 (2/2)" data-icon="fa-briefcase">
+                <div class="border-l-4 border-indigo-500 pl-4 md:pl-5 mb-2 md:mb-4 relative z-10 shrink-0">
+                    <h2 class="text-2xl md:text-4xl font-bold text-white tracking-wide">2. 职业教育：反周期爆发，技能重塑驱动</h2>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-12 w-full max-w-7xl mx-auto relative z-10 items-stretch">
-                    <div class="flex flex-col bg-slate-800 p-10 rounded-[2rem] border border-slate-700/80 shadow-2xl relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fa-solid fa-arrow-trend-down text-9xl text-red-500"></i></div>
-                        <div class="w-20 h-20 bg-red-950/50 rounded-2xl flex items-center justify-center mb-8 shrink-0 shadow-inner border border-red-500/20">
-                            <i class="fa-solid fa-arrow-trend-down text-red-400 text-4xl"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full max-w-7xl mx-auto relative z-10 items-stretch shrink-0 pb-8 md:pb-0">
+                    <div class="flex flex-col bg-slate-800 p-6 md:p-10 rounded-2xl md:rounded-[2rem] border border-slate-700/80 shadow-2xl relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 md:p-8 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fa-solid fa-arrow-trend-down text-7xl md:text-9xl text-red-500"></i></div>
+                        <div class="w-16 md:w-20 h-16 md:h-20 bg-red-950/50 rounded-xl md:rounded-2xl flex items-center justify-center mb-6 md:mb-8 shrink-0 shadow-inner border border-red-500/20">
+                            <i class="fa-solid fa-arrow-trend-down text-red-400 text-3xl md:text-4xl"></i>
                         </div>
-                        <h3 class="text-3xl font-bold text-white mb-6 tracking-wide relative z-10">技术替代挤压 <br><span class="text-xl text-red-400 font-medium mt-2 block">下沉市场竞争加剧</span></h3>
-                        <p class="text-slate-300 text-xl leading-relaxed mb-8 flex-1 relative z-10">
-                            AI 致传统岗位缩减，蓝色光标已停用设计外包 (<a href="https://i.ifeng.com/c/8OyCs90cnfD" target="_blank" class="link-item text-lg">凤凰网<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>)。<br><br>
-                            <a href="https://www.goldmansachs.com/intelligence/pages/generative-ai-could-raise-global-gdp-by-7-percent.html" target="_blank" class="link-item">高盛预估全球 <span class="text-red-400 font-bold ml-2 mr-2 text-2xl">3 亿</span> 岗位将被替代<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>。
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-4 md:mb-6 tracking-wide relative z-10">技术替代挤压 <br><span class="text-lg md:text-xl text-red-400 font-medium mt-1 md:mt-2 block">下沉市场竞争加剧</span></h3>
+                        <p class="text-slate-300 text-base md:text-xl leading-relaxed mb-6 md:mb-8 flex-1 relative z-10">
+                            AI 致传统岗位缩减，蓝色光标已停用设计外包 (<a href="https://i.ifeng.com/c/8OyCs90cnfD" target="_blank" class="link-item text-sm md:text-lg">凤凰网<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>)。<br><br>
+                            <a href="https://www.goldmansachs.com/intelligence/pages/generative-ai-could-raise-global-gdp-by-7-percent.html" target="_blank" class="link-item">高盛预估全球 <span class="text-red-400 font-bold ml-1 md:ml-2 mr-1 md:mr-2 text-xl md:text-2xl">3 亿</span> 岗位将被替代<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>。
                         </p>
-                        <div class="text-base text-slate-400 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 mt-auto relative z-10">
+                        <div class="text-sm md:text-base text-slate-400 bg-slate-900/80 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-800 mt-auto relative z-10">
                             <a href="https://s3plus.meituan.net/v1/mss_f5ecef526b384cbaa1117230d53b4bd6/smart/%25E3%2580%258A%25E7%25BE%258E%25E5%259B%25A2%25E9%25AA%2591%25E6%2589%258B%25E5%25B9%25B4%25E5%25BA%25A6%25E8%2581%258C%25E4%25B8%259A%25E6%258A%25A5%25E5%2591%258A%25EF%25BC%25882024-2025%25EF%25BC%2589%25E3%2580%258B_h4vy9d.pdf" target="_blank" class="link-item font-bold text-white mb-2 block">《美团骑手职业报告》<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                             美团大专以上骑手破 24%，女性近 25%，低门槛就业容量显著收缩。
                         </div>
                     </div>
                     
-                    <div class="flex flex-col bg-slate-800 p-10 rounded-[2rem] border border-slate-700/80 shadow-2xl relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fa-solid fa-lightbulb text-9xl text-emerald-500"></i></div>
-                        <div class="w-20 h-20 bg-teal-950/50 rounded-2xl flex items-center justify-center mb-8 shrink-0 shadow-inner border border-teal-500/20">
-                            <i class="fa-solid fa-lightbulb text-emerald-400 text-4xl"></i>
+                    <div class="flex flex-col bg-slate-800 p-6 md:p-10 rounded-2xl md:rounded-[2rem] border border-slate-700/80 shadow-2xl relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 md:p-8 opacity-5 group-hover:opacity-10 transition-opacity"><i class="fa-solid fa-lightbulb text-7xl md:text-9xl text-emerald-500"></i></div>
+                        <div class="w-16 md:w-20 h-16 md:h-20 bg-teal-950/50 rounded-xl md:rounded-2xl flex items-center justify-center mb-6 md:mb-8 shrink-0 shadow-inner border border-teal-500/20">
+                            <i class="fa-solid fa-lightbulb text-emerald-400 text-3xl md:text-4xl"></i>
                         </div>
-                        <h3 class="text-3xl font-bold text-white mb-6 tracking-wide relative z-10">技能重塑 (Upskilling)<br><span class="text-xl text-emerald-400 font-medium mt-2 block">逆势反周期需求激增</span></h3>
-                        <p class="text-slate-300 text-xl leading-relaxed mb-8 flex-1 relative z-10">
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-4 md:mb-6 tracking-wide relative z-10">技能重塑 (Upskilling)<br><span class="text-lg md:text-xl text-emerald-400 font-medium mt-1 md:mt-2 block">逆势反周期需求激增</span></h3>
+                        <p class="text-slate-300 text-base md:text-xl leading-relaxed mb-6 md:mb-8 flex-1 relative z-10">
                             当宏观经济承压时，待业及在职人群的技能重塑需求爆发，职业教育投入呈显著的**反周期特征**。
                         </p>
-                        <div class="text-base text-slate-400 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-4 mt-auto relative z-10">
+                        <div class="text-sm md:text-base text-slate-400 bg-slate-900/80 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-800 space-y-3 md:space-y-4 mt-auto relative z-10">
                             <p class="flex items-start">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-3 text-xs"></i>
+                                <i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-2 md:mr-3 text-xs"></i>
                                 <span>2008 金融危机期间，<a href="https://nces.ed.gov/pubs2010/2010152rev.pdf" target="_blank" class="link-item text-white font-bold">美国社区学院入学率逆势激增 24%<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>。</span>
                             </p>
                             <p class="flex items-start">
-                                <i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-3 text-xs"></i>
-                                <span>国内公考<a href="https://www.news.cn/politics/20251130/7da14327e1c24cafbf0af0a287a2f085/c.html" target="_blank" class="link-item text-white font-bold">通过政审人数<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>由 2023 年 260 万激增至 2026 年 <span class="text-emerald-400 font-bold ml-1 text-lg">371.3 万</span>。</span>
+                                <i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-2 md:mr-3 text-xs"></i>
+                                <span>国内公考<a href="https://www.news.cn/politics/20251130/7da14327e1c24cafbf0af0a287a2f085/c.html" target="_blank" class="link-item text-white font-bold">通过政审人数<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>由 2023 年 260 万激增至 2026 年 <span class="text-emerald-400 font-bold ml-1 text-base md:text-lg">371.3 万</span>。</span>
                             </p>
                         </div>
                     </div>
@@ -198,86 +207,87 @@
             </div>
 
             <!-- Slide 3: 市场痛点 -->
-            <div class="slide slide-hidden-right flex items-center justify-center px-20" data-title="市场痛点分析：找不到和错配" data-icon="fa-bullseye">
-                <div class="grid grid-cols-2 gap-16 w-full max-w-7xl mx-auto relative z-10 items-stretch">
-                    <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 p-12 rounded-[2rem] border border-slate-700 overflow-hidden flex flex-col h-full shadow-2xl">
-                        <div class="absolute top-0 right-0 p-8 opacity-5"><span class="text-9xl font-black">01</span></div>
-                        <h3 class="text-4xl font-bold text-white mb-4 relative z-10">信息非结构化</h3>
-                        <div class="text-blue-400 font-bold text-2xl tracking-wider mb-8 relative z-10">决策耗时长 / 找不到</div>
-                        <p class="text-slate-300 text-xl leading-relaxed mb-10 flex-1 relative z-10">长尾机构众多，客观数据（如真实客诉率、历史升学率等）获取极难，试错成本极高。</p>
+            <div class="slide slide-hidden-right flex items-start md:items-center justify-center px-6 md:px-20 py-8 md:py-0 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="市场痛点分析：找不到和错配" data-icon="fa-bullseye">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 w-full max-w-7xl mx-auto relative z-10 items-stretch shrink-0 pb-8 md:pb-0">
+                    <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 p-8 md:p-12 rounded-2xl md:rounded-[2rem] border border-slate-700 overflow-hidden flex flex-col h-full shadow-2xl">
+                        <div class="absolute top-0 right-0 p-4 md:p-8 opacity-5"><span class="text-7xl md:text-9xl font-black">01</span></div>
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-10">信息非结构化</h3>
+                        <div class="text-blue-400 font-bold text-lg md:text-2xl tracking-wider mb-4 md:mb-8 relative z-10">决策耗时长 / 找不到</div>
+                        <p class="text-slate-300 text-base md:text-xl leading-relaxed mb-6 md:mb-10 flex-1 relative z-10">长尾机构众多，客观数据（如真实客诉率、历史升学率等）获取极难，试错成本极高。</p>
                         
-                        <div class="bg-slate-950/80 p-8 rounded-2xl border border-slate-800 relative z-10 h-[240px] flex flex-col justify-center space-y-6 mt-auto">
-                            <div class="flex items-end space-x-4"><span class="text-6xl font-black text-white">72%</span><span class="text-slate-400 pb-2 text-lg">家庭面临“信息过载”</span></div>
-                            <div class="flex items-end space-x-4"><span class="text-6xl font-black text-white">25天</span><span class="text-slate-400 pb-2 text-lg">平均单次购买决策周期</span></div>
-                            <div class="pt-4 border-t border-slate-800 mt-2">
-                                <a href="https://creator.douyin.com/creator-micro/creator-count/arithmetic-report/detail/863?source=creator" target="_blank" class="link-item text-sm">来源: 巨量引擎《教育行业白皮书》<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
+                        <div class="bg-slate-950/80 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-800 relative z-10 h-auto md:h-[240px] flex flex-col justify-center space-y-4 md:space-y-6 mt-auto">
+                            <div class="flex items-end space-x-3 md:space-x-4"><span class="text-4xl md:text-6xl font-black text-white">72%</span><span class="text-slate-400 pb-1 md:pb-2 text-sm md:text-lg">家庭面临“信息过载”</span></div>
+                            <div class="flex items-end space-x-3 md:space-x-4"><span class="text-4xl md:text-6xl font-black text-white">25天</span><span class="text-slate-400 pb-1 md:pb-2 text-sm md:text-lg">平均单次购买决策周期</span></div>
+                            <div class="pt-3 md:pt-4 border-t border-slate-800 mt-2">
+                                <a href="https://creator.douyin.com/creator-micro/creator-count/arithmetic-report/detail/863?source=creator" target="_blank" class="link-item text-xs md:text-sm">来源: 巨量引擎《教育行业白皮书》<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 p-12 rounded-[2rem] border border-slate-700 overflow-hidden flex flex-col h-full shadow-2xl">
-                        <div class="absolute top-0 right-0 p-8 opacity-5"><span class="text-9xl font-black">02</span></div>
-                        <h3 class="text-4xl font-bold text-white mb-4 relative z-10">供需低效匹配</h3>
-                        <div class="text-rose-400 font-bold text-2xl tracking-wider mb-8 relative z-10">试错成本高 / 错配</div>
-                        <p class="text-slate-300 text-xl leading-relaxed mb-10 flex-1 relative z-10">行业极度缺乏标准化的人课/人岗匹配模型，用户画像与教培产品严重错配。</p>
+                    <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 p-8 md:p-12 rounded-2xl md:rounded-[2rem] border border-slate-700 overflow-hidden flex flex-col h-full shadow-2xl">
+                        <div class="absolute top-0 right-0 p-4 md:p-8 opacity-5"><span class="text-7xl md:text-9xl font-black">02</span></div>
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 relative z-10">供需低效匹配</h3>
+                        <div class="text-rose-400 font-bold text-lg md:text-2xl tracking-wider mb-4 md:mb-8 relative z-10">试错成本高 / 错配</div>
+                        <p class="text-slate-300 text-base md:text-xl leading-relaxed mb-6 md:mb-10 flex-1 relative z-10">行业极度缺乏标准化的人课/人岗匹配模型，用户画像与教培产品严重错配。</p>
                         
-                        <div class="bg-slate-950/80 p-8 rounded-2xl border border-slate-800 relative z-10 h-[240px] flex flex-col justify-center space-y-6 text-slate-300 text-lg mt-auto">
-                            <p class="flex items-center"><i class="fa-solid fa-circle text-rose-500 text-sm mr-4"></i> <a href="https://tousu.sina.com.cn/articles/view/431733/?br/a%20href=/*" target="_blank" class="link-item text-white font-bold text-xl">"AI培训课"<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 高居黑猫投诉榜首</p>
-                            <p class="flex items-start"><i class="fa-solid fa-circle text-rose-500 text-sm mr-4 mt-1.5"></i> <span>教培投诉位列中国消协 <a href="https://finance.sina.cn/2026-02-06/detail-inhkvvnm8260506.d.html?vt=4&cid=76675&node_id=76675" target="_blank" class="link-item text-white font-bold">第三<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a><br><span class="text-slate-400 text-base mt-1 block">核心灾区为“货不对板”</span></span></p>
+                        <div class="bg-slate-950/80 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-800 relative z-10 h-auto md:h-[240px] flex flex-col justify-center space-y-4 md:space-y-6 text-slate-300 text-sm md:text-lg mt-auto">
+                            <p class="flex items-center"><i class="fa-solid fa-circle text-rose-500 text-xs md:text-sm mr-3 md:mr-4"></i> <a href="https://tousu.sina.com.cn/articles/view/431733/?br/a%20href=/*" target="_blank" class="link-item text-white font-bold text-lg md:text-xl">"AI培训课"<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 高居黑猫投诉榜首</p>
+                            <p class="flex items-start"><i class="fa-solid fa-circle text-rose-500 text-xs md:text-sm mr-3 md:mr-4 mt-1 md:mt-1.5"></i> <span>教培投诉位列中国消协 <a href="https://finance.sina.cn/2026-02-06/detail-inhkvvnm8260506.d.html?vt=4&cid=76675&node_id=76675" target="_blank" class="link-item text-white font-bold">第三<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a><br><span class="text-slate-400 text-sm md:text-base mt-1 block">核心灾区为“货不对板”</span></span></p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 4: 解决方案与原型 iframe -->
-            <div class="slide slide-hidden-right flex px-20 py-10 gap-12" data-title="产品定义与解决方案：真实验证，智能匹配" data-icon="fa-laptop-code">
-                <div class="w-[45%] flex flex-col justify-center space-y-10 relative z-10">
-                    <div class="bg-blue-900/20 p-6 rounded-2xl border-l-4 border-blue-500">
-                        <p class="text-blue-400 text-base font-bold tracking-widest uppercase mb-2">定位</p>
-                        <h3 class="text-3xl font-bold text-white leading-snug">基于结构化数据的职教与 K12 选课智能匹配平台 <span class="text-slate-400 text-xl font-normal block mt-2">(教育决策熵减器)</span></h3>
+            <div class="slide slide-hidden-right flex flex-col md:flex-row px-6 md:px-20 py-8 md:py-10 gap-8 md:gap-12 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="产品定义与解决方案：真实验证，智能匹配" data-icon="fa-laptop-code">
+                <div class="w-full md:w-[45%] flex flex-col justify-center space-y-6 md:space-y-10 relative z-10 shrink-0">
+                    <div class="bg-blue-900/20 p-4 md:p-6 rounded-xl md:rounded-2xl border-l-4 border-blue-500">
+                        <p class="text-blue-400 text-sm md:text-base font-bold tracking-widest uppercase mb-1 md:mb-2">定位</p>
+                        <h3 class="text-xl md:text-3xl font-bold text-white leading-snug">基于结构化数据的职教与 K12 选课智能匹配平台 <span class="text-slate-400 text-base md:text-xl font-normal block mt-1 md:mt-2">(教育决策熵减器)</span></h3>
                     </div>
-                    <div class="space-y-8 text-slate-300">
+                    <div class="space-y-5 md:space-y-8 text-slate-300">
                         <div class="flex items-start">
-                            <div class="bg-slate-800 p-2 px-3 text-lg rounded-lg mr-5 shrink-0 text-blue-400 font-bold">01</div>
+                            <div class="bg-slate-800 p-1.5 md:p-2 px-2 md:px-3 text-base md:text-lg rounded-lg mr-4 md:mr-5 shrink-0 text-blue-400 font-bold">01</div>
                             <div>
-                                <h4 class="text-white font-bold text-xl mb-2">数据清洗与结构化</h4>
-                                <p class="text-base leading-relaxed">规模化抓取师资、硬件等；尽调补充 <a href="https://tcnex7eych6g.feishu.cn/sheets/MW4lsgJYehpdsAt11thcYTbyn9e?from=from_copylink" target="_blank" class="link-item">非公开数据（如中职类宿舍实拍）<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>。</p>
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-1 md:mb-2">数据清洗与结构化</h4>
+                                <p class="text-sm md:text-base leading-relaxed">规模化抓取师资、硬件等；尽调补充 <a href="https://tcnex7eych6g.feishu.cn/sheets/MW4lsgJYehpdsAt11thcYTbyn9e?from=from_copylink" target="_blank" class="link-item">非公开数据（如中职类宿舍实拍）<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>。</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="bg-slate-800 p-2 px-3 text-lg rounded-lg mr-5 shrink-0 text-blue-400 font-bold">02</div>
+                            <div class="bg-slate-800 p-1.5 md:p-2 px-2 md:px-3 text-base md:text-lg rounded-lg mr-4 md:mr-5 shrink-0 text-blue-400 font-bold">02</div>
                             <div>
-                                <h4 class="text-white font-bold text-xl mb-2">人机协同匹配引擎</h4>
-                                <p class="text-base leading-relaxed">"AI 初筛 + 人工精准匹配"。<a href="https://www.mckinsey.com.cn/%E7%94%9F%E6%88%90%E5%BC%8Fai%E5%9C%A8%E4%B8%AD%E5%9B%BD%EF%BC%9A2%E4%B8%87%E4%BA%BF%E7%BE%8E%E5%85%83%E7%9A%84%E7%BB%8F%E6%B5%8E%E4%BB%B7%E5%80%BC/" target="_blank" class="link-item">麦肯锡报告<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>: 客服 AI 预处理可降成本 30%-40%。</p>
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-1 md:mb-2">人机协同匹配引擎</h4>
+                                <p class="text-sm md:text-base leading-relaxed">"AI 初筛 + 人工精准匹配"。<a href="https://www.mckinsey.com.cn/%E7%94%9F%E6%88%90%E5%BC%8Fai%E5%9C%A8%E4%B8%AD%E5%9B%BD%EF%BC%9A2%E4%B8%87%E4%BA%BF%E7%BE%8E%E5%85%83%E7%9A%84%E7%BB%8F%E6%B5%8E%E4%BB%B7%E5%80%BC/" target="_blank" class="link-item">麦肯锡报告<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>: 客服 AI 预处理可降成本 30%-40%。</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="bg-slate-800 p-2 px-3 text-lg rounded-lg mr-5 shrink-0 text-blue-400 font-bold">03</div>
+                            <div class="bg-slate-800 p-1.5 md:p-2 px-2 md:px-3 text-base md:text-lg rounded-lg mr-4 md:mr-5 shrink-0 text-blue-400 font-bold">03</div>
                             <div>
-                                <h4 class="text-white font-bold text-xl mb-2">返佣补贴构筑壁垒</h4>
-                                <p class="text-base leading-relaxed">将 B 端高毛利 CPS 佣金按比例补贴 C 端，建绝对价格优势。</p>
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-1 md:mb-2">返佣补贴构筑壁垒</h4>
+                                <p class="text-sm md:text-base leading-relaxed">将 B 端高毛利 CPS 佣金按比例补贴 C 端，建绝对价格优势。</p>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <div class="bg-slate-800 p-2 px-3 text-lg rounded-lg mr-5 shrink-0 text-blue-400 font-bold">04</div>
+                            <div class="bg-slate-800 p-1.5 md:p-2 px-2 md:px-3 text-base md:text-lg rounded-lg mr-4 md:mr-5 shrink-0 text-blue-400 font-bold">04</div>
                             <div>
-                                <h4 class="text-white font-bold text-xl mb-2">增值生态服务</h4>
-                                <p class="text-base leading-relaxed">OMO 线下督学；接入 <a href="https://sparkli.ai" target="_blank" class="link-item">sparkli<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>、<a href="https://www.ahaaamath.com/zh" target="_blank" class="link-item">数感星球<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 等工具。</p>
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-1 md:mb-2">增值生态服务</h4>
+                                <p class="text-sm md:text-base leading-relaxed">OMO 线下督学；接入 <a href="https://sparkli.ai" target="_blank" class="link-item">sparkli<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>、<a href="https://www.ahaaamath.com/zh" target="_blank" class="link-item">数感星球<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 等工具。</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex-1 h-full flex flex-col bg-slate-900 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden relative z-10">
-                    <div class="h-12 bg-slate-800 flex items-center px-5 space-x-2 border-b border-slate-700 shrink-0">
-                        <div class="w-3.5 h-3.5 rounded-full bg-rose-500"></div><div class="w-3.5 h-3.5 rounded-full bg-amber-500"></div><div class="w-3.5 h-3.5 rounded-full bg-emerald-500"></div>
-                        <div class="ml-4 flex-1 bg-slate-900/50 rounded h-8 flex items-center justify-center"><span class="text-sm text-slate-500 font-mono tracking-widest">PROTOTYPE: FIGMA LIVE</span></div>
+                <div class="w-full md:flex-1 h-[400px] min-h-[400px] md:h-full flex flex-col bg-slate-900 rounded-2xl md:rounded-3xl border border-slate-700 shadow-2xl overflow-hidden relative z-10 shrink-0 pb-8 md:pb-0">
+                    <div class="h-10 md:h-12 bg-slate-800 flex items-center px-4 md:px-5 space-x-2 border-b border-slate-700 shrink-0 z-30 relative">
+                        <div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-rose-500"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-amber-500"></div><div class="w-3 md:w-3.5 h-3 md:h-3.5 rounded-full bg-emerald-500"></div>
+                        <div class="ml-2 md:ml-4 flex-1 bg-slate-900/50 rounded h-6 md:h-8 flex items-center justify-center"><span class="text-xs md:text-sm text-slate-500 font-mono tracking-widest">PROTOTYPE: FIGMA LIVE</span></div>
                     </div>
                     <div class="flex-1 relative bg-white">
-                        <iframe src="https://mango-merge-69423827.figma.site/" class="w-full h-full border-0 absolute inset-0 z-10 pointer-events-auto"></iframe>
-                        <div class="absolute inset-0 flex items-center justify-center bg-slate-900 z-0">
-                            <div class="animate-pulse flex flex-col items-center">
-                                <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
-                                <span class="text-slate-400 tracking-widest">LOADING PROTOTYPE...</span>
+                        <iframe id="figma-iframe" src="https://mango-merge-69423827.figma.site/" class="w-full h-full border-0 absolute inset-0 z-10 pointer-events-auto"></iframe>
+                        <!-- 智能加载占位层，超时会变成失败提示 -->
+                        <div id="figma-loader" class="absolute inset-0 flex items-center justify-center bg-slate-900 z-20 transition-opacity duration-300">
+                            <div class="flex flex-col items-center">
+                                <i id="figma-loader-icon" class="fa-solid fa-spinner fa-spin text-3xl md:text-4xl text-blue-500 mb-3 md:mb-4"></i>
+                                <span id="figma-loader-text" class="text-xs md:text-sm text-slate-400 tracking-widest">LOADING PROTOTYPE...</span>
                             </div>
                         </div>
                     </div>
@@ -285,45 +295,45 @@
             </div>
 
             <!-- Slide 5: 商业模型 -->
-            <div class="slide slide-hidden-right flex flex-col justify-center px-20 space-y-10" data-title="商业模型与客单价测算：300+1500" data-icon="fa-layer-group">
-                <div class="grid grid-cols-2 gap-12 w-full max-w-7xl mx-auto h-full items-stretch relative z-10">
-                    <div class="bg-slate-800 p-12 rounded-[2rem] border border-slate-700 relative overflow-hidden shadow-2xl flex flex-col h-full">
-                        <div class="absolute top-0 right-0 bg-blue-500 text-white font-bold px-8 py-3 rounded-bl-3xl text-xl shadow-lg">单客 LTV ≥ 300元</div>
-                        <h3 class="text-3xl font-bold text-white mb-8 mt-2">1. CPL 模式 (线索分发)</h3>
+            <div class="slide slide-hidden-right flex flex-col justify-start md:justify-center px-6 md:px-20 py-8 md:py-0 space-y-6 md:space-y-10 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="商业模型与客单价测算：300+1500" data-icon="fa-layer-group">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full max-w-7xl mx-auto h-auto md:h-full items-stretch relative z-10 shrink-0 pb-8 md:pb-0">
+                    <div class="bg-slate-800 p-8 md:p-12 rounded-2xl md:rounded-[2rem] border border-slate-700 relative overflow-hidden shadow-2xl flex flex-col h-full">
+                        <div class="absolute top-0 right-0 bg-blue-500 text-white font-bold px-4 md:px-8 py-2 md:py-3 rounded-bl-2xl md:rounded-bl-3xl text-sm md:text-xl shadow-lg">单客 LTV ≥ 300元</div>
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-6 md:mb-8 mt-4 md:mt-2">1. CPL 模式 (线索分发)</h3>
                         
-                        <div class="flex items-center space-x-3 text-sm text-slate-300 mb-8 font-mono w-full justify-between">
-                            <span class="bg-slate-900 px-5 py-3 rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">C 端留资</span>
-                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right"></i></span>
-                            <span class="bg-slate-900 px-5 py-3 rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">标准线索</span>
-                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right"></i></span>
-                            <span class="bg-slate-900 px-5 py-3 rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">机构分发</span>
+                        <div class="flex flex-wrap items-center gap-2 md:gap-0 md:space-x-3 text-xs md:text-sm text-slate-300 mb-6 md:mb-8 font-mono w-full md:justify-between">
+                            <span class="bg-slate-900 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">C 端留资</span>
+                            <span class="text-slate-500 hidden md:inline"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="bg-slate-900 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">标准线索</span>
+                            <span class="text-slate-500 hidden md:inline"><i class="fa-solid fa-arrow-right"></i></span>
+                            <span class="bg-slate-900 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl border border-slate-700 shadow-inner flex-1 text-center font-bold">机构分发</span>
                         </div>
                         
-                        <div class="text-slate-300 text-lg leading-loose flex-1 flex flex-col justify-center mt-4">
-                            <p class="mb-4">单条线索均价约 <strong class="text-white text-2xl mx-1">100元</strong>。</p>
-                            <p class="mb-4"><a href="https://trendinsight.oceanengine.com/" target="_blank" class="link-item text-white font-bold">巨量引擎教育洞察数据<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 显示，高客单教培表单 CPA 普遍在 80-150 元。</p>
-                            <p class="text-blue-300 bg-blue-900/20 p-4 rounded-xl border-l-4 border-blue-500 mt-4">平台高精准留资具对等变现价值。单客需求可跨品类复用（均分发 ≥3次）。</p>
+                        <div class="text-slate-300 text-sm md:text-lg leading-relaxed md:leading-loose flex-1 flex flex-col justify-center mt-2 md:mt-4">
+                            <p class="mb-3 md:mb-4">单条线索均价约 <strong class="text-white text-lg md:text-2xl mx-1">100元</strong>。</p>
+                            <p class="mb-3 md:mb-4"><a href="https://trendinsight.oceanengine.com/" target="_blank" class="link-item text-white font-bold">巨量引擎教育洞察数据<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a> 显示，高客单教培表单 CPA 普遍在 80-150 元。</p>
+                            <p class="text-blue-300 bg-blue-900/20 p-3 md:p-4 rounded-xl border-l-4 border-blue-500 mt-2 md:mt-4 text-xs md:text-base">平台高精准留资具对等变现价值。单客需求可跨品类复用（均分发 ≥3次）。</p>
                         </div>
                     </div>
 
-                    <div class="bg-slate-800 p-12 rounded-[2rem] border border-slate-700 relative overflow-hidden shadow-2xl flex flex-col h-full">
-                        <div class="absolute top-0 right-0 bg-emerald-500 text-white font-bold px-8 py-3 rounded-bl-3xl text-xl shadow-lg">单客年 LTV ≥ 1500元</div>
-                        <h3 class="text-3xl font-bold text-white mb-8 mt-2">2. CPS 模式 (成交抽佣)</h3>
+                    <div class="bg-slate-800 p-8 md:p-12 rounded-2xl md:rounded-[2rem] border border-slate-700 relative overflow-hidden shadow-2xl flex flex-col h-full">
+                        <div class="absolute top-0 right-0 bg-emerald-500 text-white font-bold px-4 md:px-8 py-2 md:py-3 rounded-bl-2xl md:rounded-bl-3xl text-sm md:text-xl shadow-lg">单客年 LTV ≥ 1500元</div>
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-6 md:mb-8 mt-4 md:mt-2">2. CPS 模式 (成交抽佣)</h3>
                         
-                        <div class="flex items-center space-x-4 text-base text-slate-300 mb-8 font-mono">
-                            <span class="bg-slate-900 px-6 py-3 rounded-xl border border-slate-700 shadow-inner font-bold">促成实际交易</span>
-                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right text-xl"></i></span>
-                            <span class="bg-slate-900 px-6 py-3 rounded-xl border border-slate-700 shadow-inner font-bold text-emerald-400">按单抽佣结算</span>
+                        <div class="flex items-center space-x-2 md:space-x-4 text-xs md:text-base text-slate-300 mb-6 md:mb-8 font-mono">
+                            <span class="bg-slate-900 px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl border border-slate-700 shadow-inner font-bold">促成实际交易</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrow-right text-base md:text-xl"></i></span>
+                            <span class="bg-slate-900 px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl border border-slate-700 shadow-inner font-bold text-emerald-400">按单抽佣结算</span>
                         </div>
                         
-                        <div class="flex flex-col gap-6 mt-auto">
-                            <div class="bg-slate-900/80 p-8 rounded-2xl border border-slate-700/50 shadow-inner">
-                                <h4 class="text-white font-bold text-xl mb-3 flex items-center"><i class="fa-solid fa-school text-emerald-500 mr-3"></i>K12 线下择校</h4>
-                                <p class="text-slate-400 text-base leading-relaxed">以重庆中职为例，学费 0.5-2 万/年。单客佣金均值 <strong class="text-emerald-400 text-xl mx-1">1500元</strong> (占比约 20%)。</p>
+                        <div class="flex flex-col gap-4 md:gap-6 mt-auto">
+                            <div class="bg-slate-900/80 p-5 md:p-8 rounded-xl md:rounded-2xl border border-slate-700/50 shadow-inner">
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-2 md:mb-3 flex items-center"><i class="fa-solid fa-school text-emerald-500 mr-2 md:mr-3"></i>K12 线下择校</h4>
+                                <p class="text-slate-400 text-sm md:text-base leading-relaxed">以重庆中职为例，学费 0.5-2 万/年。单客佣金均值 <strong class="text-emerald-400 text-lg md:text-xl mx-1">1500元</strong> (占比约 20%)。</p>
                             </div>
-                            <div class="bg-slate-900/80 p-8 rounded-2xl border border-slate-700/50 shadow-inner">
-                                <h4 class="text-white font-bold text-xl mb-3 flex items-center"><i class="fa-solid fa-laptop-file text-emerald-500 mr-3"></i>K12 线上网课</h4>
-                                <p class="text-slate-400 text-base leading-relaxed">高阶课(约40节) 2000-3500 元。按年购两期算，单客佣金均值 <strong class="text-emerald-400 text-xl mx-1">1400-2450元</strong>。</p>
+                            <div class="bg-slate-900/80 p-5 md:p-8 rounded-xl md:rounded-2xl border border-slate-700/50 shadow-inner">
+                                <h4 class="text-white font-bold text-lg md:text-xl mb-2 md:mb-3 flex items-center"><i class="fa-solid fa-laptop-file text-emerald-500 mr-2 md:mr-3"></i>K12 线上网课</h4>
+                                <p class="text-slate-400 text-sm md:text-base leading-relaxed">高阶课(约40节) 2000-3500 元。按年购两期算，单客佣金均值 <strong class="text-emerald-400 text-lg md:text-xl mx-1">1400-2450元</strong>。</p>
                             </div>
                         </div>
                     </div>
@@ -331,60 +341,60 @@
             </div>
 
             <!-- Slide 6: TAM -->
-            <div class="slide slide-hidden-right flex flex-col items-center justify-center px-20 space-y-16" data-title="目标市场容量 (TAM)：销售预算 118.06亿元" data-icon="fa-globe">
-                <div class="text-center relative z-10">
-                    <p class="text-slate-400 text-2xl font-bold tracking-widest uppercase mb-4">销售预算理论上限</p>
-                    <h2 class="text-[7rem] leading-none font-black text-white drop-shadow-2xl">118.06 <span class="text-4xl text-blue-400 ml-2">亿元</span></h2>
+            <div class="slide slide-hidden-right flex flex-col items-center justify-start md:justify-center px-6 md:px-20 py-8 md:py-0 space-y-8 md:space-y-16 overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="目标市场容量 (TAM)：销售预算 118.06亿元" data-icon="fa-globe">
+                <div class="text-center relative z-10 shrink-0">
+                    <p class="text-slate-400 text-sm md:text-2xl font-bold tracking-widest uppercase mb-2 md:mb-4">销售预算理论上限</p>
+                    <h2 class="text-6xl md:text-[7rem] leading-none font-black text-white drop-shadow-2xl">118.06 <span class="text-2xl md:text-4xl text-blue-400 ml-1 md:ml-2">亿元</span></h2>
                 </div>
-                <div class="grid grid-cols-2 gap-12 w-full max-w-5xl mx-auto relative z-10">
-                    <div class="bg-slate-800 p-10 rounded-[2rem] border border-slate-700 text-center flex flex-col items-center shadow-xl">
-                        <h3 class="text-3xl font-bold text-white mb-8">1. K12 线下择校</h3>
-                        <div class="text-5xl font-black text-blue-400 mb-8 pb-8 border-b border-slate-700 w-full">58.06 亿</div>
-                        <ul class="text-left text-slate-300 space-y-4 text-base w-full px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full max-w-5xl mx-auto relative z-10 shrink-0 pb-8 md:pb-0">
+                    <div class="bg-slate-800 p-6 md:p-10 rounded-2xl md:rounded-[2rem] border border-slate-700 text-center flex flex-col items-center shadow-xl">
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-4 md:mb-8">1. K12 线下择校</h3>
+                        <div class="text-3xl md:text-5xl font-black text-blue-400 mb-4 md:mb-8 pb-4 md:pb-8 border-b border-slate-700 w-full">58.06 亿</div>
+                        <ul class="text-left text-slate-300 space-y-3 md:space-y-4 text-sm md:text-base w-full px-2 md:px-4">
                             <li class="flex justify-between items-center">
                                 <span>覆盖核心城市:</span> 
-                                <div><strong class="text-white text-lg">22 个</strong> <a href="https://www.ndrc.gov.cn/xwdt/ztzl/xxczhjs/xcjsfz/202408/t20240807_1392278_ext.html" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
+                                <div><strong class="text-white text-base md:text-lg">22 个</strong> <a href="https://www.ndrc.gov.cn/xwdt/ztzl/xxczhjs/xcjsfz/202408/t20240807_1392278_ext.html" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span>精准目标基盘:</span> 
-                                <div><strong class="text-white text-lg">322.6 万人</strong> <a href="http://www.moe.gov.cn/jyb_sjzl/sjzl_fztjgb/202506/t20250611_1193760.html" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
+                                <div><strong class="text-white text-base md:text-lg">322.6 万人</strong> <a href="http://www.moe.gov.cn/jyb_sjzl/sjzl_fztjgb/202506/t20250611_1193760.html" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
                             </li>
-                            <li class="flex justify-between mt-6 pt-6 border-t border-slate-700/50 text-slate-400"><span>公式推演:</span> <span>322.6万 × 1800元</span></li>
+                            <li class="flex justify-between mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-700/50 text-slate-400"><span>公式推演:</span> <span>322.6万 × 1800元</span></li>
                         </ul>
                     </div>
-                    <div class="bg-slate-800 p-10 rounded-[2rem] border border-slate-700 text-center flex flex-col items-center shadow-xl">
-                        <h3 class="text-3xl font-bold text-white mb-8">2. K12 线上网课</h3>
-                        <div class="text-5xl font-black text-blue-400 mb-8 pb-8 border-b border-slate-700 w-full">60.00 亿</div>
-                        <ul class="text-left text-slate-300 space-y-4 text-base w-full px-4">
+                    <div class="bg-slate-800 p-6 md:p-10 rounded-2xl md:rounded-[2rem] border border-slate-700 text-center flex flex-col items-center shadow-xl">
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-4 md:mb-8">2. K12 线上网课</h3>
+                        <div class="text-3xl md:text-5xl font-black text-blue-400 mb-4 md:mb-8 pb-4 md:pb-8 border-b border-slate-700 w-full">60.00 亿</div>
+                        <ul class="text-left text-slate-300 space-y-3 md:space-y-4 text-sm md:text-base w-full px-2 md:px-4">
                             <li class="flex justify-between items-center">
                                 <span>覆盖下沉城市:</span> 
-                                <div><strong class="text-white text-lg">275 个</strong> <a href="https://www.stats.gov.cn/" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
+                                <div><strong class="text-white text-base md:text-lg">275 个</strong> <a href="https://www.stats.gov.cn/" target="_blank" class="link-item text-xs ml-1"><i class="fa-solid fa-up-right-from-square"></i></a></div>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span>网课付费基盘:</span> 
-                                <strong class="text-white text-lg">1500+ 万人</strong>
+                                <strong class="text-white text-base md:text-lg">1500+ 万人</strong>
                             </li>
-                            <li class="flex justify-between mt-6 pt-6 border-t border-slate-700/50 text-slate-400"><span>公式推演:</span> <span>1500万 × 400元</span></li>
+                            <li class="flex justify-between mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-700/50 text-slate-400"><span>公式推演:</span> <span>1500万 × 400元</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 7: 运营规划 -->
-            <div class="slide slide-hidden-right flex flex-col items-center justify-center w-full h-full" data-title="运营规划与核心指标：NPS和NPM" data-icon="fa-timeline">
-                <div class="w-full max-w-7xl mx-auto px-24 flex flex-col justify-center space-y-16 relative z-10">
-                    <div class="relative pl-12 border-l-2 border-slate-700">
-                        <div class="absolute -left-[13px] top-2 bg-slate-900 border-4 border-blue-500 w-6 h-6 rounded-full"></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">阶段一：原型测试与模型验证 <span class="text-slate-400 text-xl font-normal ml-4">(16-30 周)</span></h3>
-                        <div class="bg-slate-800/80 p-8 rounded-3xl border border-slate-700 mt-6 shadow-xl">
-                            <div class="flex items-center mb-6">
-                                <span class="bg-blue-900/50 text-blue-400 px-4 py-1.5 rounded-lg text-sm font-bold mr-4 tracking-wider">NORTH STAR</span>
-                                <span class="text-3xl font-black text-white">NPS (净推荐值) ≥ 30分</span>
+            <div class="slide slide-hidden-right flex flex-col items-start md:items-center justify-start md:justify-center w-full h-full overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="运营规划与核心指标：NPS和NPM" data-icon="fa-timeline">
+                <div class="w-full max-w-7xl mx-auto px-6 md:px-24 py-8 md:py-0 flex flex-col justify-start md:justify-center space-y-8 md:space-y-16 relative z-10 shrink-0 pb-16 md:pb-0">
+                    <div class="relative pl-8 md:pl-12 border-l-2 border-slate-700">
+                        <div class="absolute -left-[9px] md:-left-[13px] top-1 md:top-2 bg-slate-900 border-2 md:border-4 border-blue-500 w-4 h-4 md:w-6 md:h-6 rounded-full"></div>
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-2 md:mb-4">阶段一：原型测试与模型验证 <span class="text-slate-400 text-sm md:text-xl font-normal ml-2 md:ml-4 block md:inline mt-1 md:mt-0">(16-30 周)</span></h3>
+                        <div class="bg-slate-800/80 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-slate-700 mt-4 md:mt-6 shadow-xl">
+                            <div class="flex flex-col md:flex-row items-start md:items-center mb-4 md:mb-6">
+                                <span class="bg-blue-900/50 text-blue-400 px-3 md:px-4 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-bold mr-0 md:mr-4 mb-2 md:mb-0 tracking-wider">NORTH STAR</span>
+                                <span class="text-xl md:text-3xl font-black text-white">NPS (净推荐值) ≥ 30分</span>
                             </div>
-                            <div class="mb-6 border-l-2 border-blue-500/30 pl-4 text-sm">
+                            <div class="mb-4 md:mb-6 border-l-2 border-blue-500/30 pl-3 md:pl-4 text-xs md:text-sm">
                                 <a href="https://www.bain.com/insights/topics/net-promoter-system/" target="_blank" class="link-item">对齐贝恩(Bain)优秀 C 端产品裂变及格线<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                             </div>
-                            <div class="grid grid-cols-2 gap-6 text-base bg-slate-900/50 p-6 rounded-2xl">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 text-sm md:text-base bg-slate-900/50 p-4 md:p-6 rounded-xl md:rounded-2xl">
                                 <p><span class="text-slate-400">样本地区：</span> <strong class="text-white">1000 样本 (重庆)</strong></p>
                                 <p><span class="text-slate-400">测试品类：</span> <strong class="text-white">中职、网课</strong></p>
                                 <p><span class="text-slate-400">获客渠道：</span> <strong class="text-white">效果广告+私域置换</strong></p>
@@ -392,15 +402,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="relative pl-12 border-l-2 border-slate-700">
-                        <div class="absolute -left-[13px] top-2 bg-slate-900 border-4 border-emerald-500 w-6 h-6 rounded-full"></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">阶段二：商业化跑通 <span class="text-slate-400 text-xl font-normal ml-4">(15-20 周起同步介入)</span></h3>
-                        <div class="bg-slate-800/80 p-8 rounded-3xl border border-slate-700 mt-6 shadow-xl flex justify-between items-center">
-                            <div>
-                                <span class="bg-emerald-900/50 text-emerald-400 px-4 py-1.5 rounded-lg text-sm font-bold block w-fit mb-3">CORE METRIC</span>
-                                <span class="text-4xl font-black text-white">平台净利润率 (NPM) ≥ 40%</span>
+                    <div class="relative pl-8 md:pl-12 border-l-2 border-slate-700">
+                        <div class="absolute -left-[9px] md:-left-[13px] top-1 md:top-2 bg-slate-900 border-2 md:border-4 border-emerald-500 w-4 h-4 md:w-6 md:h-6 rounded-full"></div>
+                        <h3 class="text-xl md:text-3xl font-bold text-white mb-2 md:mb-4">阶段二：商业化跑通 <span class="text-slate-400 text-sm md:text-xl font-normal ml-2 md:ml-4 block md:inline mt-1 md:mt-0">(15-20 周起同步介入)</span></h3>
+                        <div class="bg-slate-800/80 p-5 md:p-8 rounded-2xl md:rounded-3xl border border-slate-700 mt-4 md:mt-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center">
+                            <div class="mb-4 md:mb-0">
+                                <span class="bg-emerald-900/50 text-emerald-400 px-3 md:px-4 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-bold block w-fit mb-2 md:mb-3">CORE METRIC</span>
+                                <span class="text-2xl md:text-4xl font-black text-white">平台净利润率 (NPM) ≥ 40%</span>
                             </div>
-                            <div class="text-base font-mono text-slate-400 bg-slate-900 p-6 rounded-2xl border border-slate-700/50 shadow-inner">
+                            <div class="text-sm md:text-base font-mono text-slate-400 bg-slate-900 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-700/50 shadow-inner w-full md:w-auto">
                                 净利润 = 营收 - (人力+流量+研发+数据)
                             </div>
                         </div>
@@ -409,41 +419,41 @@
             </div>
 
             <!-- Slide 8: 融资 -->
-            <div class="slide slide-hidden-right flex items-center justify-center w-full h-full" data-title="融资条款与资金规划：20% = 1.5M" data-icon="fa-sack-dollar">
-                <div class="w-full max-w-7xl mx-auto px-24 flex items-center gap-16 relative z-10">
-                    <div class="w-[40%] space-y-10">
+            <div class="slide slide-hidden-right flex items-start md:items-center justify-center w-full h-full overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="融资条款与资金规划：20% = 1.5M" data-icon="fa-sack-dollar">
+                <div class="w-full max-w-7xl mx-auto px-6 md:px-24 py-8 md:py-0 flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-16 relative z-10 shrink-0 pb-16 md:pb-0">
+                    <div class="w-full md:w-[40%] space-y-6 md:space-y-10">
                         <div>
-                            <h3 class="text-2xl font-bold text-white mb-8">融资方案</h3>
-                            <div class="space-y-5">
-                                <div class="flex justify-between items-center bg-slate-800 p-5 rounded-2xl border border-slate-700"><span class="text-slate-400 text-lg">出让股权</span><span class="text-3xl font-black text-white">20%</span></div>
-                                <div class="flex justify-between items-center bg-slate-800 p-5 rounded-2xl border border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]"><span class="text-slate-400 text-lg">融资金额</span><span class="text-4xl font-black text-blue-400">150 万</span></div>
-                                <div class="flex justify-between items-center bg-slate-800 p-5 rounded-2xl border border-slate-700"><span class="text-slate-400 text-lg">投后估值</span><span class="text-3xl font-black text-white">750 万</span></div>
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-4 md:mb-8">融资方案</h3>
+                            <div class="space-y-4 md:space-y-5">
+                                <div class="flex justify-between items-center bg-slate-800 p-4 md:p-5 rounded-xl md:rounded-2xl border border-slate-700"><span class="text-slate-400 text-sm md:text-lg">出让股权</span><span class="text-xl md:text-3xl font-black text-white">20%</span></div>
+                                <div class="flex justify-between items-center bg-slate-800 p-4 md:p-5 rounded-xl md:rounded-2xl border border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]"><span class="text-slate-400 text-sm md:text-lg">融资金额</span><span class="text-2xl md:text-4xl font-black text-blue-400">150 万</span></div>
+                                <div class="flex justify-between items-center bg-slate-800 p-4 md:p-5 rounded-xl md:rounded-2xl border border-slate-700"><span class="text-slate-400 text-sm md:text-lg">投后估值</span><span class="text-xl md:text-3xl font-black text-white">750 万</span></div>
                             </div>
-                            <div class="mt-4">
+                            <div class="mt-3 md:mt-4">
                                 <a href="https://static.itjuzi.com/pdf/5ae354e170de1376e1c13737654f5dae.pdf" target="_blank" class="link-item text-xs">参考IT桔子：教培AI工具天使轮中位数1500-3000万<i class="fa-solid fa-up-right-from-square text-[10px]"></i></a>
                             </div>
                         </div>
-                        <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 border-dashed">
-                            <h4 class="text-base font-bold text-slate-300 mb-3">退出机制</h4>
-                            <p class="text-sm text-slate-400 leading-relaxed">设 600 万估值上限（Cap）老股转让；<br/>或产生正向现金流后，按股比分红。</p>
+                        <div class="bg-slate-800/50 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-700 border-dashed">
+                            <h4 class="text-sm md:text-base font-bold text-slate-300 mb-2 md:mb-3">退出机制</h4>
+                            <p class="text-xs md:text-sm text-slate-400 leading-relaxed">设 600 万估值上限（Cap）老股转让；<br/>或产生正向现金流后，按股比分红。</p>
                         </div>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold text-white mb-10">资金分配预算 (150万)</h3>
-                        <div class="space-y-10">
+                    <div class="w-full md:flex-1">
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-6 md:mb-10">资金分配预算 (150万)</h3>
+                        <div class="space-y-6 md:space-y-10">
                             <div>
-                                <div class="flex justify-between text-lg mb-3"><span class="text-white font-bold">获客投放 (70 万)</span><span class="text-blue-400 font-bold">46.7%</span></div>
-                                <div class="w-full bg-slate-800 rounded-full h-5 shadow-inner"><div class="bg-blue-500 h-5 rounded-full" style="width: 46.7%"></div></div>
-                                <p class="text-base text-slate-400 mt-3">冷启动流量采买及渠道转化率测试</p>
+                                <div class="flex justify-between text-sm md:text-lg mb-2 md:mb-3"><span class="text-white font-bold">获客投放 (70 万)</span><span class="text-blue-400 font-bold">46.7%</span></div>
+                                <div class="w-full bg-slate-800 rounded-full h-3 md:h-5 shadow-inner"><div class="bg-blue-500 h-3 md:h-5 rounded-full" style="width: 46.7%"></div></div>
+                                <p class="text-sm md:text-base text-slate-400 mt-2 md:mt-3">冷启动流量采买及渠道转化率测试</p>
                             </div>
                             <div>
-                                <div class="flex justify-between text-lg mb-3"><span class="text-white font-bold">人力与运营 (50 万)</span><span class="text-emerald-400 font-bold">33.3%</span></div>
-                                <div class="w-full bg-slate-800 rounded-full h-5 shadow-inner"><div class="bg-emerald-500 h-5 rounded-full" style="width: 33.3%"></div></div>
-                                <p class="text-base text-slate-400 mt-3">研发 20 万 + 内容及用户运营 30 万</p>
+                                <div class="flex justify-between text-sm md:text-lg mb-2 md:mb-3"><span class="text-white font-bold">人力与运营 (50 万)</span><span class="text-emerald-400 font-bold">33.3%</span></div>
+                                <div class="w-full bg-slate-800 rounded-full h-3 md:h-5 shadow-inner"><div class="bg-emerald-500 h-3 md:h-5 rounded-full" style="width: 33.3%"></div></div>
+                                <p class="text-sm md:text-base text-slate-400 mt-2 md:mt-3">研发 20 万 + 内容及用户运营 30 万</p>
                             </div>
                             <div>
-                                <div class="flex justify-between text-lg mb-3"><span class="text-white font-bold">软硬件与 API (30 万)</span><span class="text-purple-400 font-bold">20.0%</span></div>
-                                <div class="w-full bg-slate-800 rounded-full h-5 shadow-inner"><div class="bg-purple-500 h-5 rounded-full" style="width: 20%"></div></div>
+                                <div class="flex justify-between text-sm md:text-lg mb-2 md:mb-3"><span class="text-white font-bold">软硬件与 API (30 万)</span><span class="text-purple-400 font-bold">20.0%</span></div>
+                                <div class="w-full bg-slate-800 rounded-full h-3 md:h-5 shadow-inner"><div class="bg-purple-500 h-3 md:h-5 rounded-full" style="width: 20%"></div></div>
                             </div>
                         </div>
                     </div>
@@ -451,42 +461,42 @@
             </div>
 
             <!-- Slide 9: 团队 -->
-            <div class="slide slide-hidden-right flex flex-col items-center justify-center w-full h-full" data-title="核心团队与业务顾问：父母+营销人" data-icon="fa-users">
-                <div class="w-full max-w-7xl mx-auto px-24 flex flex-col justify-center gap-12 relative z-10">
+            <div class="slide slide-hidden-right flex flex-col justify-start md:justify-center w-full h-full overflow-y-auto overflow-x-hidden md:overflow-hidden" data-title="核心团队与业务顾问：父母+营销人" data-icon="fa-users">
+                <div class="w-full max-w-7xl mx-auto px-6 md:px-24 py-8 md:py-0 flex flex-col justify-start md:justify-center gap-8 md:gap-12 relative z-10 shrink-0 pb-16 md:pb-0">
                     <div>
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center"><div class="w-2.5 h-8 bg-blue-500 rounded-sm mr-4"></div> 1. 核心团队</h3>
-                        <div class="grid grid-cols-3 gap-8">
-                            <div class="bg-slate-800/80 p-8 rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
-                                <h4 class="text-3xl font-black text-white mb-2">董克 <span class="text-base text-blue-400 font-normal ml-2">CEO</span></h4>
-                                <p class="text-white font-medium text-base mb-4">连续创业者</p>
-                                <p class="text-slate-400 text-sm leading-relaxed">前腾讯高级产品经理。<br/>港城大硕士 / 中传本科。</p>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 flex items-center"><div class="w-2 md:w-2.5 h-6 md:h-8 bg-blue-500 rounded-sm mr-3 md:mr-4"></div> 1. 核心团队</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+                            <div class="bg-slate-800/80 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
+                                <h4 class="text-2xl md:text-3xl font-black text-white mb-1 md:mb-2">董克 <span class="text-sm md:text-base text-blue-400 font-normal ml-2">CEO</span></h4>
+                                <p class="text-white font-medium text-sm md:text-base mb-2 md:mb-4">连续创业者</p>
+                                <p class="text-slate-400 text-xs md:text-sm leading-relaxed">前腾讯高级产品经理。<br/>港城大硕士 / 中传本科。</p>
                             </div>
-                            <div class="bg-slate-800/80 p-8 rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
-                                <h4 class="text-3xl font-black text-white mb-2">张雅雯 <span class="text-base text-blue-400 font-normal ml-2">CMO</span></h4>
-                                <p class="text-white font-medium text-base mb-4">营销人：内容与传播操盘</p>
-                                <p class="text-slate-400 text-sm leading-relaxed">前深圳/湖南卫视编导。<br/>港中文硕士 / 中传本科。</p>
+                            <div class="bg-slate-800/80 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
+                                <h4 class="text-2xl md:text-3xl font-black text-white mb-1 md:mb-2">张雅雯 <span class="text-sm md:text-base text-blue-400 font-normal ml-2">CMO</span></h4>
+                                <p class="text-white font-medium text-sm md:text-base mb-2 md:mb-4">营销人：内容与传播操盘</p>
+                                <p class="text-slate-400 text-xs md:text-sm leading-relaxed">前深圳/湖南卫视编导。<br/>港中文硕士 / 中传本科。</p>
                             </div>
-                            <div class="bg-slate-800/80 p-8 rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
-                                <h4 class="text-3xl font-black text-white mb-2">杜媛 <span class="text-base text-blue-400 font-normal ml-2">COO</span></h4>
-                                <p class="text-white font-medium text-base mb-4">资深运营专家</p>
-                                <p class="text-slate-400 text-sm leading-relaxed">负责平台业务整体运营统筹。<br/>丰富的教培资源落地经验。</p>
+                            <div class="bg-slate-800/80 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-slate-700 shadow-lg hover:border-blue-500/50 transition-colors">
+                                <h4 class="text-2xl md:text-3xl font-black text-white mb-1 md:mb-2">杜媛 <span class="text-sm md:text-base text-blue-400 font-normal ml-2">COO</span></h4>
+                                <p class="text-white font-medium text-sm md:text-base mb-2 md:mb-4">资深运营专家</p>
+                                <p class="text-slate-400 text-xs md:text-sm leading-relaxed">负责平台业务整体运营统筹。<br/>丰富的教培资源落地经验。</p>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-white mb-6 flex items-center"><div class="w-2.5 h-8 bg-emerald-500 rounded-sm mr-4"></div> 2. 外部顾问矩阵</h3>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="flex items-center bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
-                                <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-lg font-bold mr-5 border border-slate-700 shadow-inner shrink-0">AI</div>
-                                <div><h4 class="text-white font-bold text-base">杨晓 / 杨春风 / 肖磊</h4><p class="text-slate-400 text-sm mt-1">微软亚研院 / 腾讯广告 / 蚂蚁金服 高管</p></div>
+                        <h3 class="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 flex items-center"><div class="w-2 md:w-2.5 h-6 md:h-8 bg-emerald-500 rounded-sm mr-3 md:mr-4"></div> 2. 外部顾问矩阵</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <div class="flex items-center bg-slate-900/60 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-800">
+                                <div class="w-10 md:w-14 h-10 md:h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-sm md:text-lg font-bold mr-4 md:mr-5 border border-slate-700 shadow-inner shrink-0">AI</div>
+                                <div><h4 class="text-white font-bold text-sm md:text-base">杨晓 / 杨春风 / 肖磊</h4><p class="text-slate-400 text-xs md:text-sm mt-1">微软亚研院 / 腾讯广告 / 蚂蚁金服 高管</p></div>
                             </div>
-                            <div class="flex items-center bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
-                                <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-lg font-bold mr-5 border border-slate-700 shadow-inner shrink-0">教</div>
-                                <div><h4 class="text-white font-bold text-base">何军</h4><p class="text-slate-400 text-sm mt-1">重庆轻工职业学校副校长，副教授</p></div>
+                            <div class="flex items-center bg-slate-900/60 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-800">
+                                <div class="w-10 md:w-14 h-10 md:h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-sm md:text-lg font-bold mr-4 md:mr-5 border border-slate-700 shadow-inner shrink-0">教</div>
+                                <div><h4 class="text-white font-bold text-sm md:text-base">何军</h4><p class="text-slate-400 text-xs md:text-sm mt-1">重庆轻工职业学校副校长，副教授</p></div>
                             </div>
-                            <div class="flex items-center bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
-                                <div class="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-lg font-bold mr-5 border border-slate-700 shadow-inner shrink-0">运</div>
-                                <div><h4 class="text-white font-bold text-base">胡树勋</h4><p class="text-slate-400 text-sm mt-1">前腾讯财付通运营总监</p></div>
+                            <div class="flex items-center bg-slate-900/60 p-4 md:p-6 rounded-xl md:rounded-2xl border border-slate-800">
+                                <div class="w-10 md:w-14 h-10 md:h-14 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 text-sm md:text-lg font-bold mr-4 md:mr-5 border border-slate-700 shadow-inner shrink-0">运</div>
+                                <div><h4 class="text-white font-bold text-sm md:text-base">胡树勋</h4><p class="text-slate-400 text-xs md:text-sm mt-1">前腾讯财付通运营总监</p></div>
                             </div>
                         </div>
                     </div>
@@ -494,22 +504,22 @@
             </div>
             
             <!-- Slide 10: 感谢页 (Thank You) -->
-            <div class="slide slide-hidden-right flex flex-col items-center justify-center text-center bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800" data-title="感谢聆听" data-icon="fa-handshake">
-                <div class="p-6 bg-emerald-500/10 rounded-3xl mb-10 relative z-10">
-                    <i class="fa-solid fa-envelope-open-text text-7xl text-emerald-400"></i>
+            <div class="slide slide-hidden-right flex flex-col items-center justify-center text-center bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 overflow-y-auto px-6" data-title="感谢聆听" data-icon="fa-handshake">
+                <div class="p-4 md:p-6 bg-emerald-500/10 rounded-2xl md:rounded-3xl mb-6 md:mb-10 relative z-10 mt-8 md:mt-0">
+                    <i class="fa-solid fa-envelope-open-text text-5xl md:text-7xl text-emerald-400"></i>
                 </div>
-                <h1 class="text-[5rem] font-black tracking-tight text-white mb-6 relative z-10">THANK YOU</h1>
-                <p class="text-3xl text-slate-300 font-light tracking-wide mb-12 relative z-10">感谢您的宝贵时间，期待与您深入交流合作！</p>
+                <h1 class="text-5xl md:text-[5rem] font-black tracking-tight text-white mb-4 md:mb-6 relative z-10">THANK YOU</h1>
+                <p class="text-lg md:text-3xl text-slate-300 font-light tracking-wide mb-8 md:mb-12 relative z-10 px-4">感谢您的宝贵时间，期待与您深入交流合作！</p>
                 
-                <div class="flex flex-col items-center space-y-4 relative z-10">
-                    <p class="text-slate-500 text-sm tracking-widest uppercase mb-2">联系我们 / Contact Us</p>
-                    <div class="flex gap-8 text-slate-400 text-lg">
-                        <div class="flex items-center gap-4 bg-slate-800/80 px-8 py-4 rounded-full border border-slate-700 shadow-lg hover:border-emerald-500/50 transition-colors">
-                            <i class="fa-brands fa-weixin text-emerald-400 text-2xl"></i> 
+                <div class="flex flex-col items-center space-y-3 md:space-y-4 relative z-10 pb-8 md:pb-0">
+                    <p class="text-slate-500 text-xs md:text-sm tracking-widest uppercase mb-1 md:mb-2">联系我们 / Contact Us</p>
+                    <div class="flex flex-col md:flex-row gap-4 md:gap-8 text-slate-400 text-base md:text-lg w-full md:w-auto">
+                        <div class="flex items-center justify-center gap-3 md:gap-4 bg-slate-800/80 px-6 md:px-8 py-3 md:py-4 rounded-full border border-slate-700 shadow-lg hover:border-emerald-500/50 transition-colors w-full md:w-auto">
+                            <i class="fa-brands fa-weixin text-emerald-400 text-xl md:text-2xl"></i> 
                             <span class="text-white font-medium tracking-wider">Wikialot</span>
                         </div>
-                        <a href="mailto:me@nerodong.com" class="flex items-center gap-4 bg-slate-800/80 px-8 py-4 rounded-full border border-slate-700 shadow-lg hover:border-emerald-500/50 transition-colors cursor-pointer group">
-                            <i class="fa-solid fa-envelope text-emerald-400 text-2xl group-hover:scale-110 transition-transform"></i> 
+                        <a href="mailto:me@nerodong.com" class="flex items-center justify-center gap-3 md:gap-4 bg-slate-800/80 px-6 md:px-8 py-3 md:py-4 rounded-full border border-slate-700 shadow-lg hover:border-emerald-500/50 transition-colors cursor-pointer group w-full md:w-auto">
+                            <i class="fa-solid fa-envelope text-emerald-400 text-xl md:text-2xl group-hover:scale-110 transition-transform"></i> 
                             <span class="text-white font-medium tracking-wider">me@nerodong.com</span>
                         </a>
                     </div>
@@ -518,27 +528,39 @@
 
         </div>
 
-        <!-- 底部导航栏 -->
-        <div class="h-20 px-12 flex items-center justify-between border-t border-slate-800/80 shrink-0 bg-slate-950 z-20">
-            <div class="flex items-center space-x-4">
-                <button id="btn-prev" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all opacity-20 pointer-events-none">
-                    <i class="fa-solid fa-chevron-left text-xl"></i>
+        <!-- 底部导航栏：移动端对称排版 (左中右)、PC端分布排版 -->
+        <div id="ppt-footer" class="h-16 md:h-20 px-4 md:px-12 flex items-center justify-between border-t border-slate-800/80 shrink-0 bg-slate-950 z-20 transition-opacity duration-300 relative w-full">
+            
+            <!-- 左侧：返回 (移动端+PC端) -->
+            <div class="flex items-center space-x-2 md:space-x-4 z-10 w-1/4 md:w-auto justify-start">
+                <button id="btn-prev" class="p-2.5 md:p-3 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent border border-slate-700 md:border-transparent text-slate-400 hover:text-white hover:bg-slate-700 transition-all opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-chevron-left text-base md:text-xl"></i>
                 </button>
-                <button id="btn-next" class="p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
-                    <i class="fa-solid fa-chevron-right text-xl"></i>
-                </button>
-                <span id="page-indicator" class="text-slate-500 text-base ml-6 font-mono font-bold tracking-widest">01 / 11</span>
             </div>
 
-            <div id="dots-container" class="flex space-x-2.5 absolute left-1/2 -translate-x-1/2">
-                <!-- JS 动态生成 -->
+            <!-- 中间：进度点与手机端页码 -->
+            <div class="flex flex-col items-center justify-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-0 w-2/4 md:w-[50%]">
+                <div id="dots-container" class="flex items-center justify-center space-x-1.5 md:space-x-2.5 pointer-events-auto flex-wrap gap-y-1">
+                    <!-- JS 动态生成 -->
+                </div>
+                <!-- 移动端页码，放在点点下面 -->
+                <span id="page-indicator-mobile" class="md:hidden text-slate-500 text-[11px] font-mono font-bold tracking-widest mt-1 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">01 / 11</span>
             </div>
             
-            <div class="text-slate-500 text-sm font-mono uppercase tracking-widest flex items-center">
-                <span class="mr-3">Use</span>
-                <span class="bg-slate-800 px-2 py-1 rounded-md border border-slate-700 mr-1 shadow-inner"><i class="fa-solid fa-arrow-left"></i></span>
-                <span class="bg-slate-800 px-2 py-1 rounded-md border border-slate-700 mr-3 shadow-inner"><i class="fa-solid fa-arrow-right"></i></span>
-                <span>To Navigate</span>
+            <!-- 右侧：前进 (移动端+PC端) -->
+            <div class="flex items-center z-10 w-1/4 md:w-auto justify-end gap-6">
+                <!-- PC端提示语和页码 -->
+                <span id="page-indicator-pc" class="hidden md:block text-slate-500 text-base font-mono font-bold tracking-widest">01 / 11</span>
+                <div class="text-slate-500 text-sm font-mono uppercase tracking-widest hidden md:flex items-center">
+                    <span class="mr-3">Use</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded-md border border-slate-700 mr-1 shadow-inner"><i class="fa-solid fa-arrow-left"></i></span>
+                    <span class="bg-slate-800 px-2 py-1 rounded-md border border-slate-700 mr-3 shadow-inner"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span>To Navigate</span>
+                </div>
+
+                <button id="btn-next" class="p-2.5 md:p-3 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent border border-slate-700 md:border-transparent text-slate-400 hover:text-white hover:bg-slate-700 transition-all">
+                    <i class="fa-solid fa-chevron-right text-base md:text-xl"></i>
+                </button>
             </div>
         </div>
 
@@ -556,14 +578,35 @@
         const slides = document.querySelectorAll('.slide');
         const btnPrev = document.getElementById('btn-prev');
         const btnNext = document.getElementById('btn-next');
-        const pageIndicator = document.getElementById('page-indicator');
+        const pageIndicatorPc = document.getElementById('page-indicator-pc');
+        const pageIndicatorMobile = document.getElementById('page-indicator-mobile');
         const dotsContainer = document.getElementById('dots-container');
         const slideHeader = document.getElementById('slide-header');
         const slideTitle = document.getElementById('slide-title');
         const slideIcon = document.getElementById('slide-icon');
+        const scrollHint = document.getElementById('mobile-scroll-hint');
 
         let currentSlide = 0;
         let isAuthenticated = false;
+
+        // --- 0. 检查本地状态缓存 (LocalStorage) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedAuth = localStorage.getItem('bp_auth');
+            const savedSlide = localStorage.getItem('bp_slide');
+            
+            if (savedAuth === 'true') {
+                isAuthenticated = true;
+                authScreen.style.display = 'none';
+                pptScreen.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                pptScreen.classList.add('opacity-100', 'scale-100');
+                
+                if (savedSlide !== null) {
+                    currentSlide = parseInt(savedSlide, 10);
+                }
+                updateSlides();
+                checkIframeLoader(); // 启动 Iframe 监测
+            }
+        });
 
         // --- 1. 密码验证逻辑 ---
         loginForm.addEventListener('submit', (e) => {
@@ -573,12 +616,16 @@
                 const obfuscated = btoa(val.split('').reverse().join(''));
                 if (obfuscated === 'NjI5NTE0MTM=') {
                     isAuthenticated = true;
+                    // 保存登录状态
+                    localStorage.setItem('bp_auth', 'true');
+                    
                     authScreen.classList.add('opacity-0', 'pointer-events-none');
                     setTimeout(() => {
                         authScreen.style.display = 'none';
                         pptScreen.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
                         pptScreen.classList.add('opacity-100', 'scale-100');
                         updateSlides();
+                        checkIframeLoader(); // 启动 Iframe 监测
                     }, 500);
                 } else {
                     errorMsg.classList.remove('hidden');
@@ -588,17 +635,84 @@
             }
         });
 
+        // --- Iframe 智能加载监测 ---
+        function checkIframeLoader() {
+            const iframe = document.getElementById('figma-iframe');
+            const loader = document.getElementById('figma-loader');
+            const loaderIcon = document.getElementById('figma-loader-icon');
+            const loaderText = document.getElementById('figma-loader-text');
+            
+            if (!iframe || !loader) return;
+            
+            let isLoaded = false;
+            
+            // 监听 iframe 加载成功
+            iframe.onload = () => {
+                isLoaded = true;
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 300);
+            };
+            
+            // 5秒超时检测
+            setTimeout(() => {
+                if (!isLoaded) {
+                    // 移除跳动动画，显示警告
+                    const pulseDiv = loader.querySelector('.animate-pulse');
+                    if(pulseDiv) pulseDiv.classList.remove('animate-pulse');
+                    
+                    loaderIcon.className = 'fa-solid fa-triangle-exclamation text-3xl md:text-4xl text-rose-500 mb-3 md:mb-4';
+                    loaderText.textContent = '加载超时，需要翻墙';
+                    loaderText.classList.replace('text-slate-400', 'text-rose-400');
+                }
+            }, 5000);
+        }
+
         // --- 2. 幻灯片控制逻辑 ---
         
         // 生成底部原点
         slides.forEach((_, i) => {
             const dot = document.createElement('button');
-            dot.className = `h-2 rounded-full transition-all duration-300 ${i === 0 ? 'w-12 bg-blue-500' : 'w-2.5 bg-slate-700 hover:bg-slate-500'}`;
+            dot.className = `h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === 0 ? 'w-8 md:w-12 bg-blue-500' : 'w-1.5 md:w-2.5 bg-slate-700 hover:bg-slate-500'}`;
             dot.addEventListener('click', () => { currentSlide = i; updateSlides(); });
             dotsContainer.appendChild(dot);
         });
 
+        // 智能下滑提示监测
+        function updateScrollHint() {
+            if (window.innerWidth >= 768) {
+                scrollHint.classList.add('opacity-0');
+                return;
+            }
+            const activeSlide = slides[currentSlide];
+            // 只有当内容溢出需要滚动时，且没有滚到底部时，才显示提示
+            if (activeSlide.scrollHeight > activeSlide.clientHeight + 10) {
+                if (activeSlide.scrollTop + activeSlide.clientHeight < activeSlide.scrollHeight - 20) {
+                    scrollHint.classList.remove('opacity-0');
+                } else {
+                    scrollHint.classList.add('opacity-0');
+                }
+            } else {
+                scrollHint.classList.add('opacity-0');
+            }
+        }
+
+        // 监听每页的滚动动作
+        slides.forEach(slide => {
+            slide.addEventListener('scroll', () => {
+                // 用户一旦开始向下滑动超过10px，就主动隐藏跳动提示
+                if (slide.scrollTop > 10) {
+                    scrollHint.classList.add('opacity-0');
+                } else {
+                    updateScrollHint();
+                }
+            });
+        });
+        window.addEventListener('resize', updateScrollHint);
+
         function updateSlides() {
+            // 保存当前页码
+            localStorage.setItem('bp_slide', currentSlide);
+
             // 更新每页的状态
             slides.forEach((slide, i) => {
                 slide.classList.remove('slide-active', 'slide-hidden-left', 'slide-hidden-right');
@@ -610,7 +724,9 @@
                     } else {
                         slideHeader.classList.remove('opacity-0', 'pointer-events-none');
                         slideTitle.textContent = slide.dataset.title;
-                        slideIcon.className = `fa-solid ${slide.dataset.icon} text-blue-400 text-2xl`;
+                        slideIcon.className = `fa-solid ${slide.dataset.icon} text-blue-400 text-lg md:text-2xl`;
+                        // 每次翻页将滚动条自动重置回顶部
+                        slide.scrollTop = 0;
                     }
                 } else if (i < currentSlide) {
                     slide.classList.add('slide-hidden-left');
@@ -620,37 +736,71 @@
             });
 
             // 更新页码和按钮状态
-            pageIndicator.textContent = `${String(currentSlide + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+            const pageText = `${String(currentSlide + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+            pageIndicatorPc.textContent = pageText;
+            pageIndicatorMobile.textContent = pageText;
             
             btnPrev.classList.toggle('opacity-20', currentSlide === 0);
             btnPrev.classList.toggle('pointer-events-none', currentSlide === 0);
             
-            btnNext.classList.toggle('opacity-20', currentSlide === slides.length - 1);
-            btnNext.classList.toggle('pointer-events-none', currentSlide === slides.length - 1);
+            const isLast = currentSlide === slides.length - 1;
+            btnNext.classList.toggle('opacity-20', isLast);
+            btnNext.classList.toggle('pointer-events-none', isLast);
 
             // 更新圆点
             Array.from(dotsContainer.children).forEach((dot, i) => {
-                dot.className = `h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-12 bg-blue-500' : 'w-2.5 bg-slate-700 hover:bg-slate-500 cursor-pointer'}`;
+                dot.className = `h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-8 md:w-12 bg-blue-500' : 'w-1.5 md:w-2.5 bg-slate-700 hover:bg-slate-500 cursor-pointer'}`;
             });
+
+            // 延迟检查以适应 CSS 过渡后的高度变化
+            setTimeout(updateScrollHint, 300);
         }
 
-        btnPrev.addEventListener('click', () => {
-            if (currentSlide > 0) { currentSlide--; updateSlides(); }
-        });
-
-        btnNext.addEventListener('click', () => {
-            if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); }
-        });
+        const handleNext = () => { if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); } };
+        
+        btnPrev.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; updateSlides(); } });
+        btnNext.addEventListener('click', handleNext);
 
         // 键盘左右键控制
         window.addEventListener('keydown', (e) => {
             if (!isAuthenticated) return;
             if (e.key === 'ArrowRight' || e.key === ' ') {
-                if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); }
+                handleNext();
             } else if (e.key === 'ArrowLeft') {
                 if (currentSlide > 0) { currentSlide--; updateSlides(); }
             }
         });
+
+        // --- 3. 移动端原生 Touch 左右滑动支持 ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        window.addEventListener('touchstart', e => {
+            if (!isAuthenticated) return;
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        window.addEventListener('touchend', e => {
+            if (!isAuthenticated) return;
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            
+            // 严格防误触阈值：
+            // 水平滑动距离必须大于 50px，并且明显大于垂直滑动距离（乘以 1.5），防止上下浏览内容时误翻页
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+                if (diffX > 0) {
+                    // 向右滑 -> 触发返回上一页
+                    if (currentSlide > 0) { currentSlide--; updateSlides(); }
+                } else {
+                    // 向左滑 -> 触发前进下一页
+                    if (currentSlide < slides.length - 1) { currentSlide++; updateSlides(); }
+                }
+            }
+        }, {passive: true});
 
     </script>
 </body>
