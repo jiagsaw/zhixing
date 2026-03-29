@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动版投资意向书 - 投资收益深度模拟</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutrals & Terracotta (Stone-50 background, Stone-800 text, Orange-700 accents) -->
+    <!-- Application Structure Plan: 
+         1. Core Inputs: Investment Amount and Equity Stake.
+         2. Exit & Profit Simulator: A sophisticated calculator for secondary sales including cost-basis and net profit.
+         3. Liquidation Preference: Waterfall visualization for total exit events.
+         4. Legal Context: Structured cards for ROFR and Dividends.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body { background-color: #fafaf9; color: #292524; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 280px;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #c2410c; /* orange-700 */
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e7e5e4;
+            border-radius: 3px;
+        }
+        .profit-text { color: #15803d; } /* green-700 */
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen pb-20">
+
+    <nav class="sticky top-0 z-50 glass-panel border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-orange-700 text-white p-2 rounded-lg text-xl">📊</div>
+                <h1 class="text-xl font-black text-stone-900 tracking-tight">投资收益深度模拟器</h1>
+            </div>
+            <div class="hidden md:block px-3 py-1 bg-stone-100 rounded-full text-[10px] font-bold text-stone-500 uppercase">
+                Term Sheet Interactive Tool v3.0
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-12">
+
+        <!-- STEP 1: Core Deal Configuration -->
+        <section class="glass-panel rounded-3xl p-8 border-2 border-orange-100 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full -mr-16 -mt-16 opacity-50"></div>
+            <div class="max-w-4xl mx-auto relative z-10">
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-black text-stone-900 mb-2">1. 设定投资初始参数</h2>
+                    <p class="text-stone-500 italic">调整滑动条，定义你在这家公司的初始筹码</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Amount Input -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <label class="font-bold text-stone-600 text-sm uppercase">我的投资本金 (RMB)</label>
+                            <div class="flex items-baseline">
+                                <span class="text-3xl font-black text-orange-700" id="mainInvestDisplay">70</span>
+                                <span class="text-orange-600 ml-1 font-bold">万元</span>
+                            </div>
+                        </div>
+                        <input type="range" id="mainInvestSlider" min="10" max="1000" step="10" value="70" class="w-full">
+                        <div class="flex justify-between text-[10px] text-stone-400 font-mono">
+                            <span>10万</span>
+                            <span>500万</span>
+                            <span>1000万</span>
+                        </div>
+                    </div>
+
+                    <!-- Equity Input -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <label class="font-bold text-stone-600 text-sm uppercase">所占股权比例 (%)</label>
+                            <div class="flex items-baseline">
+                                <span class="text-3xl font-black text-teal-700" id="mainEquityDisplay">12</span>
+                                <span class="text-teal-600 ml-1 font-bold">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="mainEquitySlider" min="0.5" max="40" step="0.5" value="12" class="w-full">
+                        <div class="flex justify-between text-[10px] text-stone-400 font-mono">
+                            <span>0.5%</span>
+                            <span>20%</span>
+                            <span>40%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-stone-100 flex flex-col md:flex-row justify-around items-center gap-6">
+                    <div class="text-center">
+                        <p class="text-[10px] text-stone-400 font-bold uppercase mb-1">投后总估值</p>
+                        <p class="text-3xl font-black text-stone-800" id="livePostMoney">--</p>
+                    </div>
+                    <div class="hidden md:block w-px h-12 bg-stone-200"></div>
+                    <div class="text-center">
+                        <p class="text-[10px] text-stone-400 font-bold uppercase mb-1">每 1% 股权成本</p>
+                        <p class="text-xl font-bold text-stone-700" id="costPerPercent">--</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: Exit & Profit Simulator -->
+        <section class="glass-panel rounded-3xl p-8 border-t-8 border-teal-600">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-10">
+                    <div class="max-w-md">
+                        <h2 class="text-2xl font-black text-stone-900 flex items-center">
+                            <span class="mr-3">🧧</span>2. 股权售卖与获利模拟
+                        </h2>
+                        <p class="text-stone-500 mt-2 text-sm leading-relaxed">
+                            最关键的步骤：模拟公司增值后，你卖掉一部分股份能赚多少。我们将计算<strong>售卖金额</strong>减去<strong>原始成本</strong>后的<strong>实际净利润</strong>。
+                        </p>
+                    </div>
+                    <div class="w-full md:w-auto bg-stone-100 p-4 rounded-2xl border border-stone-200">
+                        <p class="text-[10px] text-stone-500 font-bold mb-3 uppercase">模拟环境设置</p>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1">
+                                    <span>未来公司总估值</span>
+                                    <span class="text-orange-700" id="futureValDisplay">2000 万</span>
+                                </div>
+                                <input type="range" id="futureValSlider" min="100" max="10000" step="100" value="2000" class="w-full h-1.5">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1">
+                                    <span>卖出我自己股份的比例</span>
+                                    <span class="text-teal-700" id="sellPortionDisplay">50 %</span>
+                                </div>
+                                <input type="range" id="sellPortionSlider" min="0" max="100" step="5" value="50" class="w-full h-1.5">
+                                <p class="text-[9px] text-stone-400 mt-1">* 0% = 不卖；100% = 全部清仓</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- Profit Metrics -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 relative overflow-hidden">
+                            <p class="text-xs text-stone-400 font-bold uppercase mb-2">本次售卖净利润 (实际赚到)</p>
+                            <p class="text-4xl font-black text-green-700" id="netProfitValue">--</p>
+                            <p class="text-xs text-green-600 mt-1 font-medium" id="roiRatioDisplay">-- 倍收益</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                                <p class="text-[10px] text-stone-400 font-bold mb-1">变现总额 (营收)</p>
+                                <p class="text-lg font-bold text-stone-800" id="cashOutTotal">--</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                                <p class="text-[10px] text-stone-400 font-bold mb-1">对应成本 (支出)</p>
+                                <p class="text-lg font-bold text-stone-500" id="costOfSoldStake">--</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                            <p class="text-xs text-teal-800 font-medium">
+                                <strong>剩余持股：</strong><br>
+                                售出后你还持有公司 <span class="font-bold text-teal-700" id="remainingEquity">-- %</span> 的股份，当前估值下价值 <span class="font-bold text-teal-700" id="remainingValue">-- 万</span>。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Profit Chart -->
+                    <div class="lg:col-span-2 glass-panel p-6 rounded-2xl flex flex-col justify-center">
+                        <h4 class="text-sm font-bold text-stone-800 mb-6 text-center">收益组成：变现 vs 成本</h4>
+                        <div class="chart-container">
+                            <canvas id="profitBreakdownChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3: Liquidation Preference Waterfall -->
+        <section class="glass-panel rounded-3xl p-8 bg-stone-100/30">
+            <div class="max-w-4xl mx-auto space-y-8">
+                <div class="text-center space-y-2">
+                    <h2 class="text-2xl font-black text-stone-900">3. 并购清算模拟 (Total Exit)</h2>
+                    <p class="text-sm text-stone-500 italic">当公司整体被卖掉或清算时，基于“清算优先权”的钱款流向</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-stone-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="font-bold text-stone-700 text-sm">整体退出价格 (万元)</label>
+                        <span class="text-2xl font-black text-orange-700" id="exitValDisplay">300</span>
+                    </div>
+                    <input type="range" id="exitValSlider" min="0" max="5000" step="50" value="300" class="w-full">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-2xl bg-teal-600 text-white shadow-lg">
+                            <p class="text-[10px] opacity-70 font-bold uppercase mb-1">投资人分得总计</p>
+                            <p class="text-3xl font-black" id="invTotalLiq">--</p>
+                            <div class="mt-2 text-xs opacity-80" id="liqBreakdownText">
+                                优先回本: -- | 分红: --
+                            </div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-white border border-stone-200 shadow-sm">
+                            <p class="text-[10px] text-stone-400 font-bold uppercase mb-1">创始人分得总计</p>
+                            <p class="text-3xl font-black text-stone-800" id="fndTotalLiq">--</p>
+                        </div>
+                    </div>
+                    <div class="h-48">
+                        <canvas id="liqChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legal Knowledge Grid -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-5 glass-panel rounded-2xl border-b-4 border-orange-500">
+                <p class="text-xl mb-2">📜</p>
+                <h4 class="font-bold text-stone-800 text-sm mb-1">优先购买权 (ROFR)</h4>
+                <p class="text-[11px] text-stone-500 leading-relaxed">你想卖股给外人时，创始人有权先按同样价格买下来，保证股权不外流。</p>
+            </div>
+            <div class="p-5 glass-panel rounded-2xl border-b-4 border-teal-500">
+                <p class="text-xl mb-2">🚫</p>
+                <h4 class="font-bold text-stone-800 text-sm mb-1">对外转让限制</h4>
+                <p class="text-[11px] text-stone-500 leading-relaxed">严禁卖股给竞争对手。如果非要卖，必须征得创始人的书面同意。</p>
+            </div>
+            <div class="p-5 glass-panel rounded-2xl border-b-4 border-stone-500">
+                <p class="text-xl mb-2">💰</p>
+                <h4 class="font-bold text-stone-800 text-sm mb-1">分红权</h4>
+                <p class="text-[11px] text-stone-500 leading-relaxed">平时公司赚了钱，扣除公积金后，大家按持股比例分利润。天使轮很少分红。</p>
+            </div>
+            <div class="p-5 glass-panel rounded-2xl border-b-4 border-orange-200">
+                <p class="text-xl mb-2">⚖️</p>
+                <h4 class="font-bold text-stone-800 text-sm mb-1">法律效力</h4>
+                <p class="text-[11px] text-stone-500 leading-relaxed">除了保密条款，这只是个“意向”。最终一切以《增资协议》公章为准。</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const mainInvest = document.getElementById('mainInvestSlider');
+            const mainEquity = document.getElementById('mainEquitySlider');
+            const mainInvestDisp = document.getElementById('mainInvestDisplay');
+            const mainEquityDisp = document.getElementById('mainEquityDisplay');
+            const postMoneyDisp = document.getElementById('livePostMoney');
+            const costPerPctDisp = document.getElementById('costPerPercent');
+
+            const futureValSlider = document.getElementById('futureValSlider');
+            const futureValDisp = document.getElementById('futureValDisplay');
+            const sellPortionSlider = document.getElementById('sellPortionSlider');
+            const sellPortionDisp = document.getElementById('sellPortionDisplay');
+
+            const netProfitValue = document.getElementById('netProfitValue');
+            const roiRatioDisplay = document.getElementById('roiRatioDisplay');
+            const cashOutTotal = document.getElementById('cashOutTotal');
+            const costOfSoldStake = document.getElementById('costOfSoldStake');
+            const remainingEquity = document.getElementById('remainingEquity');
+            const remainingValue = document.getElementById('remainingValue');
+
+            const exitSlider = document.getElementById('exitValSlider');
+            const exitDisp = document.getElementById('exitValDisplay');
+            const invTotalLiq = document.getElementById('invTotalLiq');
+            const fndTotalLiq = document.getElementById('fndTotalLiq');
+            const liqBreakdownText = document.getElementById('liqBreakdownText');
+
+            // --- Charts ---
+            // 1. Profit Breakdown Chart (Bar chart)
+            const profitCtx = document.getElementById('profitBreakdownChart').getContext('2d');
+            const profitChart = new Chart(profitCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['变现详情'],
+                    datasets: [
+                        { label: '对应原始成本', data: [0], backgroundColor: '#a8a29e', borderRadius: 8 },
+                        { label: '实际赚取的净利', data: [0], backgroundColor: '#15803d', borderRadius: 8 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, title: { display: true, text: '万元' } }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // 2. Liquidation Chart (Horizontal Stacked Bar)
+            const liqCtx = document.getElementById('liqChart').getContext('2d');
+            const liqChart = new Chart(liqCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['分配'],
+                    datasets: [
+                        { label: '投资人优先回本', data: [0], backgroundColor: '#c2410c' },
+                        { label: '投资人分红', data: [0], backgroundColor: '#fdba74' },
+                        { label: '创始人分红', data: [0], backgroundColor: '#a8a29e' }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // --- Logic Functions ---
+            function updateAll() {
+                const investAmt = parseFloat(mainInvest.value);
+                const equityPct = parseFloat(mainEquity.value);
+                const postMoney = investAmt / (equityPct / 100);
+                const costPerPct = investAmt / equityPct;
+
+                // 1. Update Core Display
+                mainInvestDisp.textContent = investAmt;
+                mainEquityDisp.textContent = equityPct;
+                postMoneyDisp.textContent = postMoney.toFixed(1) + ' 万元';
+                costPerPctDisp.textContent = costPerPct.toFixed(1) + ' 万/%';
+
+                // 2. Update Sale Simulator
+                const futureVal = parseFloat(futureValSlider.value);
+                const sellRatio = parseFloat(sellPortionSlider.value) / 100; // 用户卖掉了自己股份的多少
+
+                futureValDisp.textContent = futureVal + ' 万';
+                sellPortionDisp.textContent = (sellRatio * 100).toFixed(0) + ' %';
+
+                const myTotalStakeValue = futureVal * (equityPct / 100);
+                const actualSoldEquity = equityPct * sellRatio; // 卖掉了总公司的多少比例
+                const revenue = futureVal * (actualSoldEquity / 100); // 卖股拿到的钱
+                const costOfSoldPortion = investAmt * sellRatio; // 卖掉的那部分股份当初花了多少钱
+                const profit = revenue - costOfSoldPortion;
+                const roi = costOfSoldPortion > 0 ? (revenue / costOfSoldPortion) : 0;
+
+                const remainPct = equityPct * (1 - sellRatio);
+                const remainVal = futureVal * (remainPct / 100);
+
+                // Update Profit Text
+                netProfitValue.textContent = (profit >= 0 ? '+' : '') + profit.toFixed(1) + ' 万';
+                roiRatioDisplay.textContent = roi.toFixed(1) + ' 倍收益率';
+                cashOutTotal.textContent = revenue.toFixed(1) + ' 万';
+                costOfSoldStake.textContent = costOfSoldPortion.toFixed(1) + ' 万';
+                remainingEquity.textContent = remainPct.toFixed(1);
+                remainingValue.textContent = remainVal.toFixed(1);
+
+                // Update Profit Chart
+                profitChart.data.datasets[0].data = [costOfSoldPortion];
+                profitChart.data.datasets[1].data = [profit];
+                profitChart.update();
+
+                // 3. Update Liquidation
+                const exitVal = parseFloat(exitSlider.value);
+                exitDisp.textContent = exitVal;
+
+                let pref = Math.min(exitVal, investAmt);
+                let remaining = Math.max(0, exitVal - investAmt);
+                let invDiv = remaining * (equityPct / 100);
+                let fndDiv = remaining * ((100 - equityPct) / 100);
+
+                invTotalLiq.textContent = (pref + invDiv).toFixed(1) + ' 万';
+                fndTotalLiq.textContent = fndDiv.toFixed(1) + ' 万';
+                liqBreakdownText.textContent = `本金优先: ${pref.toFixed(1)} 万 | 剩余分红: ${invDiv.toFixed(1)} 万`;
+
+                liqChart.data.datasets[0].data = [pref];
+                liqChart.data.datasets[1].data = [invDiv];
+                liqChart.data.datasets[2].data = [fndDiv];
+                liqChart.update();
+            }
+
+            // --- Event Listeners ---
+            [mainInvest, mainEquity, futureValSlider, sellPortionSlider, exitSlider].forEach(el => {
+                el.addEventListener('input', updateAll);
+            });
+
+            // Initial Run
+            updateAll();
+        });
+    </script>
+</body>
+</html>
